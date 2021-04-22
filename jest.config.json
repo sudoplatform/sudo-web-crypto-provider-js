@@ -1,0 +1,9 @@
+{
+  "testEnvironment": "node",
+  "testMatch": ["<rootDir>/**/*.spec.ts"],
+  "testPathIgnorePatterns": ["/node_modules/", "/lib/"],
+  "clearMocks": true,
+  "collectCoverageFrom": ["src/**/*.ts", "!**/*.d.ts", "!node_modules/**"],
+  "coverageReporters": ["text", "json-summary"],
+  "coverageDirectory": "<rootDir>/build/coverage"
+}

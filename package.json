@@ -1,0 +1,61 @@
+{
+  "name": "@sudoplatform/sudo-web-crypto-provider",
+  "version": "0.0.1",
+  "author": "Anonyome Labs, Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sudoplatform/sudo-web-crypto-provider-js.git"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "clean": "rm -rf ./lib",
+    "lint": "yarn lint:eslint && yarn lint:prettier",
+    "lint:eslint": "eslint \"{bin,integration-tests,src}/**/*.{ts,tsx}\"",
+    "lint:prettier": "prettier -l \"{bin,integration-tests,src}/**/*.{js,json,jsx,ts,tsx}\" --write ",
+    "test": "jest",
+    "build": "yarn clean && yarn build:transpile && yarn build:verify && yarn build:declarations && yarn build:doc",
+    "build:verify": "yarn audit && yarn lint && yarn test --coverage",
+    "build:transpile": "babel src --out-dir lib --extensions '.ts'",
+    "build:declarations": "yarn tsc --emitDeclarationOnly",
+    "build:doc": "typedoc --mode library --excludePrivate --out docs src/index.ts"
+  },
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "browser-bunyan": "^1.6.3"
+  },
+  "peerDependencies": {
+    "io-ts": "^2.2.10"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.4",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-private-methods": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-typescript": "^7.10.4",
+    "@sudoplatform/sudo-common": "^4.0.0",
+    "@types/jest": "^26.0.13",
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
+    "eslint": "^7.5.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "fp-ts": "^2.8.2",
+    "graphql": "^15.4.0",
+    "io-ts": "^2.2.10",
+    "io-ts-types": "^0.5.10",
+    "isomorphic-webcrypto": "^2.3.6",
+    "jest": "^26.4.2",
+    "monocle-ts": "^2.0.0",
+    "newtype-ts": "^0.3.2",
+    "prettier": "^2.0.5",
+    "ts-mockito": "^2.6.1",
+    "typedoc": "0.17.0-3",
+    "typescript": "^3.9.7"
+  }
+}
