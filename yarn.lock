@@ -1577,10 +1577,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sudoplatform/sudo-common@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@sudoplatform/sudo-common/-/sudo-common-5.0.0.tgz#e419196480abed704029bb5280f937a3c50f2445"
-  integrity sha512-B9S7QuyfLX8pb5mRiS3fvvBf/mULIMNhPojwzYhNioUe4HP12URzcWHWPWFDemsIinkzxZGogVdTz3Allxs6bA==
+"@sudoplatform/sudo-common@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@sudoplatform/sudo-common/-/sudo-common-5.0.1.tgz#447d3ff6628a3ac8eeec72af623551283a76930f"
+  integrity sha512-8v6jRe1JxTQTFVAJBBChRUhE4oTNt4BFPJzfGCfS9Gfs1lbWbfJPATVViyUIFnVbl8CPNp/3GETEd8508jY7Tg==
   dependencies:
     browser-bunyan "^1.6.3"
 

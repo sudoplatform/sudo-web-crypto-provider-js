@@ -1,9 +1,9 @@
-import { KeyNotFoundError } from './errors'
-import { SudoCryptoProvider } from '@sudoplatform/sudo-common'
 import {
   PublicKey,
   PublicKeyFormat,
-} from '@sudoplatform/sudo-common/lib/sudoKeyManager/publicKey'
+  SudoCryptoProvider,
+} from '@sudoplatform/sudo-common'
+import { KeyNotFoundError } from './errors'
 
 enum KeyType {
   Symmetric = 'symmetric',
