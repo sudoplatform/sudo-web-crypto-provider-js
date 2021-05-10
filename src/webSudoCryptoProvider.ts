@@ -1,5 +1,9 @@
 import { KeyNotFoundError } from './errors'
 import { SudoCryptoProvider } from '@sudoplatform/sudo-common'
+import {
+  PublicKey,
+  PublicKeyFormat,
+} from '@sudoplatform/sudo-common/lib/sudoKeyManager/publicKey'
 
 enum KeyType {
   Symmetric = 'symmetric',
@@ -132,9 +136,18 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     Promise.resolve()
   }
 
-  public async getPublicKey(name: string): Promise<ArrayBuffer | undefined> {
+  public async getPublicKey(name: string): Promise<PublicKey | undefined> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
-    return Promise.resolve(this.#keyPairs[name]?.publicKey)
+    const key = this.#keyPairs[name]?.publicKey
+    if (!key) {
+      return undefined
+    } else {
+      return {
+        keyData: key,
+        // Format for public keys created by web sudo crypto is SPKI
+        keyFormat: PublicKeyFormat.SPKI,
+      }
+    }
   }
 
   public async removeAllKeys(): Promise<void> {

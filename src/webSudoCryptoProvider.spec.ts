@@ -291,15 +291,47 @@ describe('sudoCryptoProvider', () => {
       )
     })
 
-    it('should export RSA private key as PKCS#8 object, RSA public key as SPKI then PEM encode both.', async () => {
+    it('should export RSA private key as PKCS#8 object', async () => {
       await cryptoProvider.generateKeyPair('testKey.keyPair')
 
-      const privateKeyPKCS8 = await cryptoProvider.getPrivateKey(
+      const privateKeyPKCS8Binary = await cryptoProvider.getPrivateKey(
         'testKey.keyPair',
       )
-      expect(privateKeyPKCS8).toBeDefined()
-      const publicKeySPKI = await cryptoProvider.getPublicKey('testKey.keyPair')
-      expect(publicKeySPKI).toBeDefined()
+      expect(privateKeyPKCS8Binary).toBeDefined()
+      if (!privateKeyPKCS8Binary) {
+        fail('privateKeyPKCS8Binary unexpectedly undefined')
+      }
+
+      await expect(
+        global.crypto.subtle.importKey(
+          'pkcs8',
+          privateKeyPKCS8Binary,
+          { name: 'RSA-OAEP', hash: 'SHA-1' },
+          true,
+          ['encrypt'],
+        ),
+      ).resolves.toBeDefined()
+    })
+
+    it('should export RSA public key in SPKI format', async () => {
+      await cryptoProvider.generateKeyPair('testKey.keyPair')
+
+      const publicKeySPKIBinary = await cryptoProvider.getPublicKey(
+        'testKey.keyPair',
+      )
+      expect(publicKeySPKIBinary).toBeDefined()
+      if (!publicKeySPKIBinary) {
+        fail('publicKeySPKIBinary unexpectedly undefined')
+      }
+
+      // The base64 encoding of a public key in SPKI (SubjectPublicKeyInfo) format
+      // always starts with `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A` which encodes the algorithm
+      // for which the key is to be used. We can test for correct format by looking
+      // for that prefix in the base64 encoding of the exported public key
+      const publicKeySPKI = Buffer.from(publicKeySPKIBinary.keyData).toString(
+        'base64',
+      )
+      expect(publicKeySPKI).toMatch(/^MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A/)
     })
   })
 })
