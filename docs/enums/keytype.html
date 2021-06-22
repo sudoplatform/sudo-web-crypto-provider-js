@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>KeyFormat | @sudoplatform/sudo-web-crypto-provider</title>
+	<title>KeyType | @sudoplatform/sudo-web-crypto-provider</title>
 	<meta name="description" content="Documentation for @sudoplatform/sudo-web-crypto-provider">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="keyformat.html">KeyFormat</a>
+					<a href="keytype.html">KeyType</a>
 				</li>
 			</ul>
-			<h1>Enumeration KeyFormat</h1>
+			<h1>Enumeration KeyType</h1>
 		</div>
 	</div>
 </header>
@@ -73,10 +73,9 @@
 						<section class="tsd-index-section tsd-is-external">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="keyformat.html#jwk" class="tsd-kind-icon">Jwk</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="keyformat.html#pkcs8" class="tsd-kind-icon">Pkcs8</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="keyformat.html#raw" class="tsd-kind-icon">Raw</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="keyformat.html#spki" class="tsd-kind-icon">Spki</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="keytype.html#keypair" class="tsd-kind-icon">Key<wbr>Pair</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="keytype.html#password" class="tsd-kind-icon">Password</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="keytype.html#symmetric" class="tsd-kind-icon">Symmetric</a></li>
 							</ul>
 						</section>
 					</div>
@@ -85,42 +84,32 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-external">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-					<a name="jwk" class="tsd-anchor"></a>
-					<h3>Jwk</h3>
-					<div class="tsd-signature tsd-kind-icon">Jwk<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;jwk&quot;</span></div>
+					<a name="keypair" class="tsd-anchor"></a>
+					<h3>Key<wbr>Pair</h3>
+					<div class="tsd-signature tsd-kind-icon">Key<wbr>Pair<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;keyPair&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/webSudoCryptoProvider.ts:16</li>
+							<li>Defined in src/webSudoCryptoProvider.ts:11</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-					<a name="pkcs8" class="tsd-anchor"></a>
-					<h3>Pkcs8</h3>
-					<div class="tsd-signature tsd-kind-icon">Pkcs8<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;pkcs8&quot;</span></div>
+					<a name="password" class="tsd-anchor"></a>
+					<h3>Password</h3>
+					<div class="tsd-signature tsd-kind-icon">Password<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;password&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/webSudoCryptoProvider.ts:18</li>
+							<li>Defined in src/webSudoCryptoProvider.ts:10</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-					<a name="raw" class="tsd-anchor"></a>
-					<h3>Raw</h3>
-					<div class="tsd-signature tsd-kind-icon">Raw<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;raw&quot;</span></div>
+					<a name="symmetric" class="tsd-anchor"></a>
+					<h3>Symmetric</h3>
+					<div class="tsd-signature tsd-kind-icon">Symmetric<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;symmetric&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/webSudoCryptoProvider.ts:15</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-					<a name="spki" class="tsd-anchor"></a>
-					<h3>Spki</h3>
-					<div class="tsd-signature tsd-kind-icon">Spki<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;spki&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in src/webSudoCryptoProvider.ts:17</li>
+							<li>Defined in src/webSudoCryptoProvider.ts:9</li>
 						</ul>
 					</aside>
 				</section>
@@ -136,30 +125,27 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-enum tsd-is-external">
+						<a href="keyformat.html" class="tsd-kind-icon">Key<wbr>Format</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-enum tsd-is-external">
-						<a href="keyformat.html" class="tsd-kind-icon">Key<wbr>Format</a>
+						<a href="keytype.html" class="tsd-kind-icon">Key<wbr>Type</a>
 						<ul>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-								<a href="keyformat.html#jwk" class="tsd-kind-icon">Jwk</a>
+								<a href="keytype.html#keypair" class="tsd-kind-icon">Key<wbr>Pair</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-								<a href="keyformat.html#pkcs8" class="tsd-kind-icon">Pkcs8</a>
+								<a href="keytype.html#password" class="tsd-kind-icon">Password</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-								<a href="keyformat.html#raw" class="tsd-kind-icon">Raw</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-								<a href="keyformat.html#spki" class="tsd-kind-icon">Spki</a>
+								<a href="keytype.html#symmetric" class="tsd-kind-icon">Symmetric</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-enum tsd-is-external">
-						<a href="keytype.html" class="tsd-kind-icon">Key<wbr>Type</a>
-					</li>
 					<li class=" tsd-kind-class tsd-is-external">
 						<a href="../classes/keynotfounderror.html" class="tsd-kind-icon">Key<wbr>Not<wbr>Found<wbr>Error</a>
 					</li>

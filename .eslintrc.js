@@ -17,7 +17,6 @@ module.exports = {
       extends: [
         'plugin:@typescript-eslint/recommended',
         'prettier',
-        'prettier/@typescript-eslint',
       ],
       rules: {
         // Disallow `any`.  (This is overridden for test files, below)
