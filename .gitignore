@@ -7,3 +7,5 @@ src/gen
 scratch
 yarn-error.log
 coverage
+.yalc
+yalc.lock

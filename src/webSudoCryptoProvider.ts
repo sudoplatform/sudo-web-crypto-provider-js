@@ -1,9 +1,16 @@
 import {
+  KeyData,
+  KeyDataKeyFormat,
+  KeyDataKeyType,
   PublicKey,
   PublicKeyFormat,
   SudoCryptoProvider,
+  SudoCryptoProviderDefaults,
 } from '@sudoplatform/sudo-common'
+
 import { KeyNotFoundError } from './errors'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 
 enum KeyType {
   Symmetric = 'symmetric',
@@ -29,14 +36,18 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     this.#serviceName = serviceName
   }
   private static readonly Constants = {
-    ivSize: 16,
+    ivSize: SudoCryptoProviderDefaults.aesIVSize,
     publicKeyEncryptionAlgorithm: 'RSA-OAEP',
     symmetricKeyEncryptionAlgorithm: 'AES-CBC',
-    hashingAlgorithm: 'SHA-1',
+    symmetricKeySize: SudoCryptoProviderDefaults.aesKeySize,
+    publicKeyEncryptionHashingAlgorithm: 'SHA-1',
+    pbkdfAlgorithm: 'PBKDF2',
+    pbkdfHashingAlgorithm: 'SHA-256',
+    pbkdfDefaultRounds: SudoCryptoProviderDefaults.pbkdfRounds,
   }
 
-  #namespace: string
-  #serviceName: string
+  readonly #namespace: string
+  readonly #serviceName: string
 
   #passwords: Record<string, ArrayBuffer> = {}
   #symmetricKeys: Record<string, ArrayBuffer> = {}
@@ -75,7 +86,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     if (this.#passwords[name]) {
       this.#passwords[name] = password
     } else {
-      throw new KeyNotFoundError()
+      return Promise.reject(new KeyNotFoundError())
     }
     return Promise.resolve()
   }
@@ -102,7 +113,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     const cryptoKey = await crypto.subtle.generateKey(
       {
         name: WebSudoCryptoProvider.Constants.symmetricKeyEncryptionAlgorithm,
-        length: 256,
+        length: WebSudoCryptoProvider.Constants.symmetricKeySize,
       },
       true,
       ['encrypt', 'decrypt'],
@@ -113,57 +124,86 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     this.#symmetricKeys[name] = formattedKey
   }
 
+  public async generateSymmetricKeyFromPassword(
+    password: ArrayBuffer,
+    salt: ArrayBuffer,
+    options?: { rounds?: number },
+  ): Promise<ArrayBuffer> {
+    const rounds =
+      options?.rounds ?? WebSudoCryptoProvider.Constants.pbkdfDefaultRounds
+
+    const symmetricKey = await crypto.subtle.deriveBits(
+      {
+        name: WebSudoCryptoProvider.Constants.pbkdfAlgorithm,
+        salt,
+        iterations: rounds,
+        hash: 'SHA-256',
+      },
+      await crypto.subtle.importKey(
+        'raw',
+        password,
+        WebSudoCryptoProvider.Constants.pbkdfAlgorithm,
+        false,
+        ['deriveBits', 'deriveKey'],
+      ),
+      WebSudoCryptoProvider.Constants.symmetricKeySize,
+    )
+
+    return symmetricKey
+  }
+
   public async deleteKeyPair(name: string): Promise<void> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     delete this.#keyPairs[name]
     Promise.resolve()
   }
 
-  public async addPrivateKey(key: ArrayBuffer, name: string): Promise<void> {
+  public addPrivateKey(key: ArrayBuffer, name: string): Promise<void> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     this.#keyPairs[name] = { privateKey: key, publicKey: undefined }
-    Promise.resolve()
+
+    return Promise.resolve()
   }
 
-  public async getPrivateKey(name: string): Promise<ArrayBuffer | undefined> {
+  public getPrivateKey(name: string): Promise<ArrayBuffer | undefined> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     return Promise.resolve(this.#keyPairs[name]?.privateKey)
   }
 
-  public async addPublicKey(key: ArrayBuffer, name: string): Promise<void> {
+  public addPublicKey(key: ArrayBuffer, name: string): Promise<void> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     this.#keyPairs[name] = { privateKey: undefined, publicKey: key }
-    Promise.resolve()
+    return Promise.resolve()
   }
 
-  public async getPublicKey(name: string): Promise<PublicKey | undefined> {
+  public getPublicKey(name: string): Promise<PublicKey | undefined> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     const key = this.#keyPairs[name]?.publicKey
     if (!key) {
-      return undefined
+      return Promise.resolve(undefined)
     } else {
-      return {
+      return Promise.resolve({
         keyData: key,
         // Format for public keys created by web sudo crypto is SPKI
         keyFormat: PublicKeyFormat.SPKI,
-      }
+      })
     }
   }
 
-  public async removeAllKeys(): Promise<void> {
+  public removeAllKeys(): Promise<void> {
     this.#passwords = {}
     this.#symmetricKeys = {}
     this.#keyPairs = {}
     return Promise.resolve()
   }
 
-  public createRandomData(size: number): ArrayBuffer {
+  public generateRandomData(size: number): Promise<ArrayBuffer> {
     const buffer = new ArrayBuffer(size)
     crypto.getRandomValues(new Uint8Array(buffer))
-    return buffer
+    return Promise.resolve(buffer)
   }
 
-  public async encryptWithSymmetricKeyName(
+  public encryptWithSymmetricKeyName(
     name: string,
     data: ArrayBuffer,
     iv?: ArrayBuffer,
@@ -171,12 +211,12 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     name = this.createKeySearchTerm(name, KeyType.Symmetric)
     const key = this.#symmetricKeys[name]
     if (!key) {
-      throw new KeyNotFoundError()
+      return Promise.reject(new KeyNotFoundError())
     }
-    return await this.encryptWithSymmetricKey(key, data, iv)
+    return this.encryptWithSymmetricKey(key, data, iv)
   }
 
-  public async decryptWithSymmetricKeyName(
+  public decryptWithSymmetricKeyName(
     name: string,
     data: ArrayBuffer,
     iv?: ArrayBuffer,
@@ -184,9 +224,9 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     name = this.createKeySearchTerm(name, KeyType.Symmetric)
     const key = this.#symmetricKeys[name]
     if (!key) {
-      throw new KeyNotFoundError()
+      return Promise.reject(new KeyNotFoundError())
     }
-    return await this.decryptWithSymmetricKey(key, data, iv)
+    return this.decryptWithSymmetricKey(key, data, iv)
   }
 
   public async encryptWithSymmetricKey(
@@ -248,7 +288,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     const publicKey = this.#keyPairs[name]?.publicKey
     if (!publicKey) {
-      throw new KeyNotFoundError()
+      return Promise.reject(new KeyNotFoundError())
     }
 
     const formattedPublicKey = await crypto.subtle.importKey(
@@ -256,7 +296,10 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       publicKey,
       {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
-        hash: { name: WebSudoCryptoProvider.Constants.hashingAlgorithm },
+        hash: {
+          name: WebSudoCryptoProvider.Constants
+            .publicKeyEncryptionHashingAlgorithm,
+        },
       },
       true,
       ['encrypt'],
@@ -280,7 +323,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     const privateKey = this.#keyPairs[name]?.privateKey
     if (!privateKey) {
-      throw new KeyNotFoundError()
+      return Promise.reject(new KeyNotFoundError())
     }
 
     const formattedPrivateKey = await crypto.subtle.importKey(
@@ -288,12 +331,14 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       privateKey,
       {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
-        hash: { name: WebSudoCryptoProvider.Constants.hashingAlgorithm },
+        hash: {
+          name: WebSudoCryptoProvider.Constants
+            .publicKeyEncryptionHashingAlgorithm,
+        },
       },
       true,
       ['decrypt'],
     )
-
     const decrypted = await crypto.subtle.decrypt(
       {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
@@ -305,9 +350,9 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     return decrypted
   }
 
-  public async generateHash(data: ArrayBuffer): Promise<ArrayBuffer> {
-    return await crypto.subtle.digest(
-      WebSudoCryptoProvider.Constants.hashingAlgorithm,
+  public generateHash(data: ArrayBuffer): Promise<ArrayBuffer> {
+    return crypto.subtle.digest(
+      WebSudoCryptoProvider.Constants.publicKeyEncryptionHashingAlgorithm,
       data,
     )
   }
@@ -319,7 +364,10 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
         modulusLength: 2048,
         publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-        hash: { name: WebSudoCryptoProvider.Constants.hashingAlgorithm },
+        hash: {
+          name: WebSudoCryptoProvider.Constants
+            .publicKeyEncryptionHashingAlgorithm,
+        },
       },
       true,
       ['encrypt', 'decrypt'],
@@ -343,8 +391,63 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     this.#keyPairs[name] = newKeyPair
   }
 
+  public exportKeys(): Promise<KeyData[]> {
+    const keys: KeyData[] = []
+    Object.entries(this.#keyPairs).forEach(([k, v]) => {
+      const name = this.recoverKeyName(k, KeyType.KeyPair)
+      if (v.privateKey) {
+        keys.push({
+          name,
+          namespace: this.#namespace,
+          data: v.privateKey,
+          type: KeyDataKeyType.RSAPrivateKey,
+          format: KeyDataKeyFormat.PKCS8,
+        })
+      }
+      if (v.publicKey) {
+        keys.push({
+          name,
+          namespace: this.#namespace,
+          data: v.publicKey,
+          type: KeyDataKeyType.RSAPublicKey,
+          format: KeyDataKeyFormat.SPKI,
+        })
+      }
+    })
+
+    Object.entries(this.#passwords).forEach(([k, v]) => {
+      keys.push({
+        name: this.recoverKeyName(k, KeyType.Password),
+        namespace: this.#namespace,
+        data: v,
+        type: KeyDataKeyType.Password,
+        format: KeyDataKeyFormat.Raw,
+      })
+    })
+
+    Object.entries(this.#symmetricKeys).forEach(([k, v]) => {
+      keys.push({
+        name: this.recoverKeyName(k, KeyType.Symmetric),
+        namespace: this.#namespace,
+        data: v,
+        type: KeyDataKeyType.SymmetricKey,
+        format: KeyDataKeyFormat.Raw,
+      })
+    })
+
+    return Promise.resolve(keys)
+  }
+
   private createKeySearchTerm(name: string, type: KeyType): string {
     const prefix = this.#namespace
     return `${prefix}${prefix.length ? '.' : ''}${name}.${type}`
+  }
+
+  private recoverKeyName(keySearchTerm: string, type: KeyType): string {
+    const prefixLength = this.#namespace.length ? this.#namespace.length + 1 : 0
+    return keySearchTerm.substring(
+      prefixLength,
+      keySearchTerm.length - type.length - 1,
+    )
   }
 }

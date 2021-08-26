@@ -1,14 +1,23 @@
-import { KeyNotFoundError } from './errors'
+import {
+  DefaultSudoKeyArchive,
+  DefaultSudoKeyManager,
+  KeyArchiveIncorrectPasswordError,
+  KeyArchiveKeyType,
+  KeyNotFoundError,
+} from '@sudoplatform/sudo-common'
+import { Buffer as BufferUtil } from '@sudoplatform/sudo-common'
+import { v4 } from 'uuid'
+
 import { WebSudoCryptoProvider } from './webSudoCryptoProvider'
 
 global.crypto = require('isomorphic-webcrypto')
-global.btoa = (b) => Buffer.from(b).toString('base64')
-global.atob = (a) => Buffer.from(a, 'base64').toString()
+global.btoa ??= (b) => Buffer.from(b, 'binary').toString('base64')
+global.atob ??= (a) => Buffer.from(a, 'base64').toString('binary')
 
 const cryptoProvider = new WebSudoCryptoProvider('namespace', 'servicename')
 
-afterEach(() => {
-  return cryptoProvider.removeAllKeys()
+afterEach(async () => {
+  await cryptoProvider.removeAllKeys()
 })
 
 describe('sudoCryptoProvider', () => {
@@ -17,7 +26,7 @@ describe('sudoCryptoProvider', () => {
   describe('addPassword', () => {
     it('should add then delete a password', async () => {
       await cryptoProvider.addPassword(
-        new TextEncoder().encode('am@z1ing'),
+        BufferUtil.fromString('am@z1ing'),
         'testKey.password',
       )
       const passwordBuffer = await cryptoProvider.getPassword(
@@ -25,7 +34,7 @@ describe('sudoCryptoProvider', () => {
       )
 
       expect(passwordBuffer).toBeDefined()
-      const password = new TextDecoder().decode(passwordBuffer)
+      const password = BufferUtil.toString(passwordBuffer!)
       expect(password).toBe('am@z1ing')
 
       await cryptoProvider.deletePassword('testKey.password')
@@ -37,12 +46,12 @@ describe('sudoCryptoProvider', () => {
   describe('updatePassword', () => {
     it('should update a password', async () => {
       await cryptoProvider.addPassword(
-        new TextEncoder().encode('am@z1ing'),
+        BufferUtil.fromString('am@z1ing'),
         'testKey.password',
       )
 
       await cryptoProvider.updatePassword(
-        new TextEncoder().encode('w0W!'),
+        BufferUtil.fromString('w0W!'),
         'testKey.password',
       )
 
@@ -51,29 +60,29 @@ describe('sudoCryptoProvider', () => {
       )
 
       expect(passwordBuffer).toBeDefined()
-      expect(new TextDecoder().decode(passwordBuffer)).toBe('w0W!')
+      expect(BufferUtil.toString(passwordBuffer!)).toBe('w0W!')
     })
 
     it('should throw keyNotFoundError when updating a password that does not exist', async () => {
       await expect(
         cryptoProvider.updatePassword(
-          new TextEncoder().encode('w0W!'),
+          BufferUtil.fromString('w0W!'),
           'testKey.password',
         ),
-      ).rejects.toThrow(KeyNotFoundError)
+      ).rejects.toThrow(new KeyNotFoundError())
     })
   })
 
   describe('removeAllKeys', () => {
     it('should remove all keys', async () => {
-      const symmetricKeyBuffer = new TextEncoder().encode(symmetricKey)
+      const symmetricKeyBuffer = BufferUtil.fromString(symmetricKey)
 
       await cryptoProvider.addSymmetricKey(
         symmetricKeyBuffer,
         'testKey.symmetric',
       )
       await cryptoProvider.addPassword(
-        new TextEncoder().encode('am@z1ing'),
+        BufferUtil.fromString('am@z1ing'),
         'testKey.password',
       )
       await cryptoProvider.generateKeyPair('testKey.keyPair')
@@ -81,12 +90,14 @@ describe('sudoCryptoProvider', () => {
       const symmetricKeyAnswer = await cryptoProvider.getSymmetricKey(
         'testKey.symmetric',
       )
-      expect(new TextDecoder().decode(symmetricKeyAnswer)).toBe(symmetricKey)
+      expect(symmetricKeyAnswer).toBeDefined()
+      expect(BufferUtil.toString(symmetricKeyAnswer!)).toBe(symmetricKey)
 
       const passwordAnswer = await cryptoProvider.getPassword(
         'testKey.password',
       )
-      expect(new TextDecoder().decode(passwordAnswer)).toBe('am@z1ing')
+      expect(passwordAnswer).toBeDefined()
+      expect(BufferUtil.toString(passwordAnswer!)).toBe('am@z1ing')
 
       const publicKeyAnswer = await cryptoProvider.getPublicKey(
         'testKey.keyPair',
@@ -120,7 +131,7 @@ describe('sudoCryptoProvider', () => {
 
   describe('addSymmetricKey', () => {
     it('should add then delete symmetric key', async () => {
-      const symmetricKeyBuffer = new TextEncoder().encode(symmetricKey)
+      const symmetricKeyBuffer = BufferUtil.fromString(symmetricKey)
 
       await cryptoProvider.addSymmetricKey(
         symmetricKeyBuffer,
@@ -129,7 +140,7 @@ describe('sudoCryptoProvider', () => {
 
       const key = await cryptoProvider.getSymmetricKey('testKey.symmetric')
       expect(key).toBeDefined()
-      const decodedKey = new TextDecoder().decode(key)
+      const decodedKey = BufferUtil.toString(key!)
 
       expect(decodedKey).toBe(symmetricKey)
 
@@ -144,7 +155,7 @@ describe('sudoCryptoProvider', () => {
 
   describe('getSymmetricKey', () => {
     it('should get symmetric key when set', async () => {
-      const symmetricKeyBuffer = new TextEncoder().encode(symmetricKey)
+      const symmetricKeyBuffer = BufferUtil.fromString(symmetricKey)
 
       await cryptoProvider.addSymmetricKey(
         symmetricKeyBuffer,
@@ -188,9 +199,9 @@ describe('sudoCryptoProvider', () => {
       await expect(
         cryptoProvider.encryptWithSymmetricKeyName(
           'random.symmetric',
-          new TextEncoder().encode('data to encrypt'),
+          BufferUtil.fromString('data to encrypt'),
         ),
-      ).rejects.toThrow(KeyNotFoundError)
+      ).rejects.toThrow(new KeyNotFoundError())
     })
 
     it('should encrypt then decrypt', async () => {
@@ -198,7 +209,7 @@ describe('sudoCryptoProvider', () => {
 
       const encryptedBuffer = await cryptoProvider.encryptWithSymmetricKeyName(
         'testKey.symmetric',
-        new TextEncoder().encode('data to encrypt'),
+        BufferUtil.fromString('data to encrypt'),
       )
 
       const decryptedBuffer = await cryptoProvider.decryptWithSymmetricKeyName(
@@ -206,7 +217,7 @@ describe('sudoCryptoProvider', () => {
         encryptedBuffer,
       )
 
-      const decrypted = new TextDecoder().decode(decryptedBuffer)
+      const decrypted = BufferUtil.toString(decryptedBuffer)
       expect(decrypted).toBe('data to encrypt')
     })
   })
@@ -217,7 +228,7 @@ describe('sudoCryptoProvider', () => {
 
       const encryptedBuffer = await cryptoProvider.encryptWithSymmetricKeyName(
         'testKey.symmetric',
-        new TextEncoder().encode('data to encrypt'),
+        BufferUtil.fromString('data to encrypt'),
       )
 
       const key = await cryptoProvider.getSymmetricKey('testKey.symmetric')
@@ -227,7 +238,7 @@ describe('sudoCryptoProvider', () => {
         encryptedBuffer,
       )
 
-      const decrypted = new TextDecoder().decode(decryptedBuffer)
+      const decrypted = BufferUtil.toString(decryptedBuffer)
       expect(decrypted).toBe('data to encrypt')
     })
   })
@@ -258,9 +269,9 @@ describe('sudoCryptoProvider', () => {
       await expect(
         cryptoProvider.encryptWithPublicKey(
           'random.keyPair',
-          new TextEncoder().encode('data to encrypt'),
+          BufferUtil.fromString('data to encrypt'),
         ),
-      ).rejects.toThrow(KeyNotFoundError)
+      ).rejects.toThrow(new KeyNotFoundError())
     })
 
     it('should encrypt with public key then decrypt with private key', async () => {
@@ -268,7 +279,7 @@ describe('sudoCryptoProvider', () => {
 
       const encryptedBuffer = await cryptoProvider.encryptWithPublicKey(
         'testKey.keyPair',
-        new TextEncoder().encode('data to encrypt'),
+        BufferUtil.fromString('data to encrypt'),
       )
 
       const decryptedBuffer = await cryptoProvider.decryptWithPrivateKey(
@@ -276,7 +287,7 @@ describe('sudoCryptoProvider', () => {
         encryptedBuffer,
       )
 
-      const decrypted = new TextDecoder().decode(decryptedBuffer)
+      const decrypted = BufferUtil.toString(decryptedBuffer)
 
       expect(decrypted).toBe('data to encrypt')
 
@@ -332,6 +343,125 @@ describe('sudoCryptoProvider', () => {
         'base64',
       )
       expect(publicKeySPKI).toMatch(/^MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A/)
+    })
+  })
+
+  describe('archive tests', () => {
+    it('should archive 200 private keys to an insecure archive with binary size less than 400kB by some margin', async () => {
+      const keyManager = new DefaultSudoKeyManager(cryptoProvider)
+
+      const promises: Promise<void>[] = []
+      for (let i = 0; i < 200; ++i) {
+        promises.push(keyManager.generateKeyPair(v4()))
+      }
+      await Promise.all(promises)
+
+      const archiver = new DefaultSudoKeyArchive(keyManager, {
+        excludedKeyTypes: new Set([KeyArchiveKeyType.PublicKey]),
+      })
+      await archiver.loadKeys()
+      const archive = await archiver.archive(undefined)
+
+      expect(archive.byteLength).toBeLessThan(325 * 1024)
+    })
+
+    it('should be able to have a secure archive created from it that can be reimported', async () => {
+      const keyManager = new DefaultSudoKeyManager(cryptoProvider)
+
+      const promises: Promise<void>[] = []
+      const names: string[] = []
+      for (let i = 0; i < 10; ++i) {
+        const name = v4()
+        promises.push(keyManager.generateKeyPair(name))
+        promises.push(keyManager.generateSymmetricKey(name))
+        names.push(name)
+      }
+      await Promise.all(promises)
+
+      const publicKeySealed: Record<string, ArrayBuffer> = {}
+      const symmetricKeySealed: Record<string, ArrayBuffer> = {}
+      for (const name of names) {
+        publicKeySealed[name] = await keyManager.encryptWithPublicKey(
+          name,
+          Buffer.from(name),
+        )
+        symmetricKeySealed[name] = await keyManager.encryptWithSymmetricKeyName(
+          name,
+          Buffer.from(name),
+        )
+      }
+
+      const archiver = new DefaultSudoKeyArchive(keyManager, {
+        excludedKeyTypes: new Set([KeyArchiveKeyType.PublicKey]),
+      })
+      await archiver.loadKeys()
+
+      const archive = await archiver.archive('password')
+
+      cryptoProvider.removeAllKeys()
+
+      const unarchiver = new DefaultSudoKeyArchive(keyManager, {
+        archiveData: archive,
+      })
+      await unarchiver.unarchive('password')
+      await unarchiver.saveKeys()
+
+      for (const name of names) {
+        const privateKeyUnsealed = await keyManager.decryptWithPrivateKey(
+          name,
+          publicKeySealed[name],
+        )
+        expect(BufferUtil.toString(privateKeyUnsealed!)).toEqual(name)
+        const symmetricKeyUnsealed =
+          await keyManager.decryptWithSymmetricKeyName(
+            name,
+            symmetricKeySealed[name],
+          )
+        expect(BufferUtil.toString(symmetricKeyUnsealed!)).toEqual(name)
+      }
+    })
+
+    it('should throw KeyArchivePasswordError if password is incorrect', async () => {
+      const keyManager = new DefaultSudoKeyManager(cryptoProvider)
+
+      const promises: Promise<void>[] = []
+      const names: string[] = []
+      for (let i = 0; i < 10; ++i) {
+        const name = v4()
+        promises.push(keyManager.generateKeyPair(name))
+        promises.push(keyManager.generateSymmetricKey(name))
+        names.push(name)
+      }
+      await Promise.all(promises)
+
+      const publicKeySealed: Record<string, ArrayBuffer> = {}
+      const symmetricKeySealed: Record<string, ArrayBuffer> = {}
+      for (const name of names) {
+        publicKeySealed[name] = await keyManager.encryptWithPublicKey(
+          name,
+          Buffer.from(name),
+        )
+        symmetricKeySealed[name] = await keyManager.encryptWithSymmetricKeyName(
+          name,
+          Buffer.from(name),
+        )
+      }
+
+      const archiver = new DefaultSudoKeyArchive(keyManager, {
+        excludedKeyTypes: new Set([KeyArchiveKeyType.PublicKey]),
+      })
+      await archiver.loadKeys()
+
+      const archive = await archiver.archive('password')
+
+      cryptoProvider.removeAllKeys()
+
+      const unarchiver = new DefaultSudoKeyArchive(keyManager, {
+        archiveData: archive,
+      })
+      await expect(unarchiver.unarchive('wrong')).rejects.toThrow(
+        new KeyArchiveIncorrectPasswordError(),
+      )
     })
   })
 })
