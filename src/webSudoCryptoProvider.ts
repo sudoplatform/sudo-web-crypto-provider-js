@@ -26,8 +26,8 @@ export enum KeyFormat {
 }
 
 export interface KeyPair {
-  publicKey: ArrayBuffer | undefined
-  privateKey: ArrayBuffer | undefined
+  publicKey: CryptoKey | undefined
+  privateKey: CryptoKey | undefined
 }
 
 export class WebSudoCryptoProvider implements SudoCryptoProvider {
@@ -158,35 +158,83 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     Promise.resolve()
   }
 
-  public addPrivateKey(key: ArrayBuffer, name: string): Promise<void> {
+  public async addPrivateKey(key: ArrayBuffer, name: string): Promise<void> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
-    this.#keyPairs[name] = { privateKey: key, publicKey: undefined }
 
-    return Promise.resolve()
+    const privateKey = await crypto.subtle.importKey(
+      KeyFormat.Pkcs8,
+      key,
+      {
+        name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
+        hash: {
+          name: WebSudoCryptoProvider.Constants
+            .publicKeyEncryptionHashingAlgorithm,
+        },
+      },
+      true,
+      ['decrypt'],
+    )
+
+    const keyPair = this.#keyPairs[name]
+    if (keyPair) {
+      keyPair.privateKey = privateKey
+      this.#keyPairs[name] = keyPair
+    } else {
+      this.#keyPairs[name] = { privateKey: privateKey, publicKey: undefined }
+    }
   }
 
-  public getPrivateKey(name: string): Promise<ArrayBuffer | undefined> {
+  public async getPrivateKey(name: string): Promise<ArrayBuffer | undefined> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
-    return Promise.resolve(this.#keyPairs[name]?.privateKey)
+    const key = this.#keyPairs[name]?.privateKey
+    if (!key) {
+      return
+    } else {
+      const privateKeyBits = await crypto.subtle.exportKey(KeyFormat.Pkcs8, key)
+
+      return privateKeyBits
+    }
   }
 
-  public addPublicKey(key: ArrayBuffer, name: string): Promise<void> {
+  public async addPublicKey(key: ArrayBuffer, name: string): Promise<void> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
-    this.#keyPairs[name] = { privateKey: undefined, publicKey: key }
-    return Promise.resolve()
+
+    const publicKey = await crypto.subtle.importKey(
+      KeyFormat.Spki,
+      key,
+      {
+        name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
+        hash: {
+          name: WebSudoCryptoProvider.Constants
+            .publicKeyEncryptionHashingAlgorithm,
+        },
+      },
+      true,
+      ['encrypt'],
+    )
+
+    const keyPair = this.#keyPairs[name]
+    if (keyPair) {
+      keyPair.publicKey = publicKey
+      this.#keyPairs[name] = keyPair
+    } else {
+      this.#keyPairs[name] = { privateKey: undefined, publicKey }
+    }
   }
 
-  public getPublicKey(name: string): Promise<PublicKey | undefined> {
+  public async getPublicKey(name: string): Promise<PublicKey | undefined> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     const key = this.#keyPairs[name]?.publicKey
     if (!key) {
-      return Promise.resolve(undefined)
+      return
     } else {
-      return Promise.resolve({
-        keyData: key,
+      const publicKeyBits = await crypto.subtle.exportKey(KeyFormat.Spki, key)
+
+      return {
+        keyData: publicKeyBits,
         // Format for public keys created by web sudo crypto is SPKI
         keyFormat: PublicKeyFormat.SPKI,
-      })
+      }
     }
   }
 
@@ -288,28 +336,14 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     const publicKey = this.#keyPairs[name]?.publicKey
     if (!publicKey) {
-      return Promise.reject(new KeyNotFoundError())
+      throw new KeyNotFoundError()
     }
-
-    const formattedPublicKey = await crypto.subtle.importKey(
-      KeyFormat.Spki,
-      publicKey,
-      {
-        name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
-        hash: {
-          name: WebSudoCryptoProvider.Constants
-            .publicKeyEncryptionHashingAlgorithm,
-        },
-      },
-      true,
-      ['encrypt'],
-    )
 
     const encrypted = await crypto.subtle.encrypt(
       {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
       },
-      formattedPublicKey,
+      publicKey,
       data,
     )
 
@@ -323,27 +357,14 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     const privateKey = this.#keyPairs[name]?.privateKey
     if (!privateKey) {
-      return Promise.reject(new KeyNotFoundError())
+      throw new KeyNotFoundError()
     }
 
-    const formattedPrivateKey = await crypto.subtle.importKey(
-      KeyFormat.Pkcs8,
-      privateKey,
-      {
-        name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
-        hash: {
-          name: WebSudoCryptoProvider.Constants
-            .publicKeyEncryptionHashingAlgorithm,
-        },
-      },
-      true,
-      ['decrypt'],
-    )
     const decrypted = await crypto.subtle.decrypt(
       {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
       },
-      formattedPrivateKey,
+      privateKey,
       data,
     )
 
@@ -373,47 +394,46 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       ['encrypt', 'decrypt'],
     )
 
-    const publicKeyBits = await crypto.subtle.exportKey(
-      KeyFormat.Spki,
-      keyPair.publicKey,
-    )
-
-    const privateKeyBits = await crypto.subtle.exportKey(
-      KeyFormat.Pkcs8,
-      keyPair.privateKey,
-    )
-
-    const newKeyPair = {
-      privateKey: privateKeyBits,
-      publicKey: publicKeyBits,
+    this.#keyPairs[name] = {
+      privateKey: keyPair.privateKey,
+      publicKey: keyPair.publicKey,
     }
-
-    this.#keyPairs[name] = newKeyPair
   }
 
-  public exportKeys(): Promise<KeyData[]> {
+  public async exportKeys(): Promise<KeyData[]> {
     const keys: KeyData[] = []
-    Object.entries(this.#keyPairs).forEach(([k, v]) => {
+    const entries = Object.entries(this.#keyPairs)
+    for (const [k, v] of entries) {
       const name = this.recoverKeyName(k, KeyType.KeyPair)
       if (v.privateKey) {
+        const privateKeyBits = await crypto.subtle.exportKey(
+          KeyFormat.Pkcs8,
+          v.privateKey,
+        )
+
         keys.push({
           name,
           namespace: this.#namespace,
-          data: v.privateKey,
+          data: privateKeyBits,
           type: KeyDataKeyType.RSAPrivateKey,
           format: KeyDataKeyFormat.PKCS8,
         })
       }
       if (v.publicKey) {
+        const publicKeyBits = await crypto.subtle.exportKey(
+          KeyFormat.Spki,
+          v.publicKey,
+        )
+
         keys.push({
           name,
           namespace: this.#namespace,
-          data: v.publicKey,
+          data: publicKeyBits,
           type: KeyDataKeyType.RSAPublicKey,
           format: KeyDataKeyFormat.SPKI,
         })
       }
-    })
+    }
 
     Object.entries(this.#passwords).forEach(([k, v]) => {
       keys.push({
@@ -435,7 +455,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       })
     })
 
-    return Promise.resolve(keys)
+    return keys
   }
 
   private createKeySearchTerm(name: string, type: KeyType): string {
