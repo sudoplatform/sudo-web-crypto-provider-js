@@ -1,4 +1,7 @@
 import {
+  AsymmetricEncryptionOptions,
+  Buffer as BufferUtil,
+  EncryptionAlgorithm,
   KeyData,
   KeyDataKeyFormat,
   KeyDataKeyType,
@@ -6,8 +9,9 @@ import {
   PublicKeyFormat,
   SudoCryptoProvider,
   SudoCryptoProviderDefaults,
+  SymmetricEncryptionOptions,
+  UnrecognizedAlgorithmError,
 } from '@sudoplatform/sudo-common'
-
 import { KeyNotFoundError } from './errors'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -254,84 +258,87 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
   public encryptWithSymmetricKeyName(
     name: string,
     data: ArrayBuffer,
-    iv?: ArrayBuffer,
+    ivOrOptions?: ArrayBuffer | SymmetricEncryptionOptions,
   ): Promise<ArrayBuffer> {
     name = this.createKeySearchTerm(name, KeyType.Symmetric)
     const key = this.#symmetricKeys[name]
     if (!key) {
       return Promise.reject(new KeyNotFoundError())
     }
-    return this.encryptWithSymmetricKey(key, data, iv)
+    return this.encryptWithSymmetricKey(key, data, ivOrOptions)
   }
 
   public decryptWithSymmetricKeyName(
     name: string,
     data: ArrayBuffer,
-    iv?: ArrayBuffer,
+    ivOrOptions?: ArrayBuffer | SymmetricEncryptionOptions,
   ): Promise<ArrayBuffer> {
     name = this.createKeySearchTerm(name, KeyType.Symmetric)
     const key = this.#symmetricKeys[name]
     if (!key) {
       return Promise.reject(new KeyNotFoundError())
     }
-    return this.decryptWithSymmetricKey(key, data, iv)
+
+    return this.decryptWithSymmetricKey(key, data, ivOrOptions)
   }
 
   public async encryptWithSymmetricKey(
     key: ArrayBuffer,
     data: ArrayBuffer,
-    iv?: ArrayBuffer,
+    ivOrOptions?: ArrayBuffer | SymmetricEncryptionOptions,
   ): Promise<ArrayBuffer> {
-    if (!iv) {
-      iv = new ArrayBuffer(WebSudoCryptoProvider.Constants.ivSize)
-    }
+    const options = this.symmetricEncryptionOptions(ivOrOptions)
+
     const secretKey = await crypto.subtle.importKey(
       'raw',
       key,
-      WebSudoCryptoProvider.Constants.symmetricKeyEncryptionAlgorithm,
+      options.algorithmName,
       false,
       ['encrypt'],
     )
+
     const encrypted = await crypto.subtle.encrypt(
       {
-        name: WebSudoCryptoProvider.Constants.symmetricKeyEncryptionAlgorithm,
-        iv,
+        name: options.algorithmName,
+        iv: options.iv,
       },
       secretKey,
       data,
     )
+
     return encrypted
   }
 
   public async decryptWithSymmetricKey(
     key: ArrayBuffer,
     data: ArrayBuffer,
-    iv?: ArrayBuffer,
+    ivOrOptions?: ArrayBuffer | SymmetricEncryptionOptions,
   ): Promise<ArrayBuffer> {
-    if (!iv) {
-      iv = new ArrayBuffer(WebSudoCryptoProvider.Constants.ivSize)
-    }
+    const options = this.symmetricEncryptionOptions(ivOrOptions)
+
     const secretKey = await crypto.subtle.importKey(
       'raw',
       key,
-      WebSudoCryptoProvider.Constants.symmetricKeyEncryptionAlgorithm,
+      options.algorithmName,
       false,
       ['decrypt'],
     )
     const decrypted = await crypto.subtle.decrypt(
       {
-        name: WebSudoCryptoProvider.Constants.symmetricKeyEncryptionAlgorithm,
-        iv,
+        name: options.algorithmName,
+        iv: options.iv,
       },
       secretKey,
       data,
     )
+
     return decrypted
   }
 
   public async encryptWithPublicKey(
     name: string,
     data: ArrayBuffer,
+    options?: AsymmetricEncryptionOptions,
   ): Promise<ArrayBuffer> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     const publicKey = this.#keyPairs[name]?.publicKey
@@ -339,9 +346,13 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       throw new KeyNotFoundError()
     }
 
+    const algorithmName = this.cryptoAlgorithmName(
+      options?.algorithm ?? EncryptionAlgorithm.RsaOaepSha1,
+    )
+
     const encrypted = await crypto.subtle.encrypt(
       {
-        name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
+        name: algorithmName,
       },
       publicKey,
       data,
@@ -353,6 +364,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
   public async decryptWithPrivateKey(
     name: string,
     data: ArrayBuffer,
+    options?: AsymmetricEncryptionOptions,
   ): Promise<ArrayBuffer> {
     name = this.createKeySearchTerm(name, KeyType.KeyPair)
     const privateKey = this.#keyPairs[name]?.privateKey
@@ -360,9 +372,13 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       throw new KeyNotFoundError()
     }
 
+    const algorithmName = this.cryptoAlgorithmName(
+      options?.algorithm ?? EncryptionAlgorithm.RsaOaepSha1,
+    )
+
     const decrypted = await crypto.subtle.decrypt(
       {
-        name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
+        name: algorithmName,
       },
       privateKey,
       data,
@@ -469,5 +485,30 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       prefixLength,
       keySearchTerm.length - type.length - 1,
     )
+  }
+
+  cryptoAlgorithmName = (algorithm: EncryptionAlgorithm): string => {
+    switch (algorithm) {
+      case EncryptionAlgorithm.AesCbcPkcs7Padding:
+        return 'AES-CBC'
+      case EncryptionAlgorithm.RsaOaepSha1:
+        return 'RSA-OAEP'
+      default:
+        throw new UnrecognizedAlgorithmError()
+    }
+  }
+
+  symmetricEncryptionOptions = (
+    ivOrOptions?: ArrayBuffer | SymmetricEncryptionOptions,
+  ): { iv: ArrayBuffer; algorithmName: string } => {
+    const options = BufferUtil.isArrayBuffer(ivOrOptions)
+      ? { iv: ivOrOptions }
+      : ivOrOptions ?? {}
+    options.iv ??= new ArrayBuffer(WebSudoCryptoProvider.Constants.ivSize)
+    options.algorithm ??= EncryptionAlgorithm.AesCbcPkcs7Padding
+
+    const algorithmName = this.cryptoAlgorithmName(options.algorithm)
+
+    return { iv: options.iv, algorithmName }
   }
 }

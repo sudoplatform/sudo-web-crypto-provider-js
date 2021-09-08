@@ -96,6 +96,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#addPrivateKey" class="tsd-kind-icon">add<wbr>Private<wbr>Key</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#addPublicKey" class="tsd-kind-icon">add<wbr>Public<wbr>Key</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#addSymmetricKey" class="tsd-kind-icon">add<wbr>Symmetric<wbr>Key</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#cryptoAlgorithmName" class="tsd-kind-icon">crypto<wbr>Algorithm<wbr>Name</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#decryptWithPrivateKey" class="tsd-kind-icon">decrypt<wbr>With<wbr>Private<wbr>Key</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#decryptWithSymmetricKey" class="tsd-kind-icon">decrypt<wbr>With<wbr>Symmetric<wbr>Key</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#decryptWithSymmetricKeyName" class="tsd-kind-icon">decrypt<wbr>With<wbr>Symmetric<wbr>Key<wbr>Name</a></li>
@@ -118,6 +119,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#getServiceName" class="tsd-kind-icon">get<wbr>Service<wbr>Name</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#getSymmetricKey" class="tsd-kind-icon">get<wbr>Symmetric<wbr>Key</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#removeAllKeys" class="tsd-kind-icon">remove<wbr>All<wbr>Keys</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#symmetricEncryptionOptions" class="tsd-kind-icon">symmetric<wbr>Encryption<wbr>Options</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WebSudoCryptoProvider.html#updatePassword" class="tsd-kind-icon">update<wbr>Password</a></li>
 							</ul>
 						</section>
@@ -136,7 +138,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:34</li>
+									<li>Defined in webSudoCryptoProvider.ts:38</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -166,7 +168,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.addPassword</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:64</li>
+									<li>Defined in webSudoCryptoProvider.ts:68</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -193,7 +195,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.addPrivateKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:161</li>
+									<li>Defined in webSudoCryptoProvider.ts:165</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -220,7 +222,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.addPublicKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:199</li>
+									<li>Defined in webSudoCryptoProvider.ts:203</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -247,7 +249,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.addSymmetricKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:94</li>
+									<li>Defined in webSudoCryptoProvider.ts:98</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -264,17 +266,40 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="cryptoAlgorithmName" class="tsd-anchor"></a>
+					<h3>crypto<wbr>Algorithm<wbr>Name</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">crypto<wbr>Algorithm<wbr>Name<span class="tsd-signature-symbol">(</span>algorithm<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">EncryptionAlgorithm</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in webSudoCryptoProvider.ts:490</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>algorithm: <span class="tsd-signature-type">EncryptionAlgorithm</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="decryptWithPrivateKey" class="tsd-anchor"></a>
 					<h3>decrypt<wbr>With<wbr>Private<wbr>Key</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>With<wbr>Private<wbr>Key<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>With<wbr>Private<wbr>Key<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">AsymmetricEncryptionOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.decryptWithPrivateKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:353</li>
+									<li>Defined in webSudoCryptoProvider.ts:364</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -285,6 +310,9 @@
 								<li>
 									<h5>data: <span class="tsd-signature-type">ArrayBuffer</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">AsymmetricEncryptionOptions</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
@@ -294,14 +322,14 @@
 					<a name="decryptWithSymmetricKey" class="tsd-anchor"></a>
 					<h3>decrypt<wbr>With<wbr>Symmetric<wbr>Key</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>With<wbr>Symmetric<wbr>Key<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, iv<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>With<wbr>Symmetric<wbr>Key<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, ivOrOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.decryptWithSymmetricKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:306</li>
+									<li>Defined in webSudoCryptoProvider.ts:312</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -313,7 +341,7 @@
 									<h5>data: <span class="tsd-signature-type">ArrayBuffer</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> iv: <span class="tsd-signature-type">ArrayBuffer</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> ivOrOptions: <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -324,14 +352,14 @@
 					<a name="decryptWithSymmetricKeyName" class="tsd-anchor"></a>
 					<h3>decrypt<wbr>With<wbr>Symmetric<wbr>Key<wbr>Name</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>With<wbr>Symmetric<wbr>Key<wbr>Name<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, iv<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>With<wbr>Symmetric<wbr>Key<wbr>Name<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, ivOrOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.decryptWithSymmetricKeyName</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:267</li>
+									<li>Defined in webSudoCryptoProvider.ts:271</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -343,7 +371,7 @@
 									<h5>data: <span class="tsd-signature-type">ArrayBuffer</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> iv: <span class="tsd-signature-type">ArrayBuffer</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> ivOrOptions: <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -361,7 +389,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.deleteKeyPair</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:155</li>
+									<li>Defined in webSudoCryptoProvider.ts:159</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -385,7 +413,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.deletePassword</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:75</li>
+									<li>Defined in webSudoCryptoProvider.ts:79</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -409,7 +437,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.deleteSymmetricKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:105</li>
+									<li>Defined in webSudoCryptoProvider.ts:109</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -426,14 +454,14 @@
 					<a name="encryptWithPublicKey" class="tsd-anchor"></a>
 					<h3>encrypt<wbr>With<wbr>Public<wbr>Key</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>With<wbr>Public<wbr>Key<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>With<wbr>Public<wbr>Key<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">AsymmetricEncryptionOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.encryptWithPublicKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:332</li>
+									<li>Defined in webSudoCryptoProvider.ts:338</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -444,6 +472,9 @@
 								<li>
 									<h5>data: <span class="tsd-signature-type">ArrayBuffer</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">AsymmetricEncryptionOptions</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
@@ -453,14 +484,14 @@
 					<a name="encryptWithSymmetricKey" class="tsd-anchor"></a>
 					<h3>encrypt<wbr>With<wbr>Symmetric<wbr>Key</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>With<wbr>Symmetric<wbr>Key<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, iv<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>With<wbr>Symmetric<wbr>Key<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, ivOrOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.encryptWithSymmetricKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:280</li>
+									<li>Defined in webSudoCryptoProvider.ts:285</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -472,7 +503,7 @@
 									<h5>data: <span class="tsd-signature-type">ArrayBuffer</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> iv: <span class="tsd-signature-type">ArrayBuffer</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> ivOrOptions: <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -483,14 +514,14 @@
 					<a name="encryptWithSymmetricKeyName" class="tsd-anchor"></a>
 					<h3>encrypt<wbr>With<wbr>Symmetric<wbr>Key<wbr>Name</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>With<wbr>Symmetric<wbr>Key<wbr>Name<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, iv<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>With<wbr>Symmetric<wbr>Key<wbr>Name<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, ivOrOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.encryptWithSymmetricKeyName</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:254</li>
+									<li>Defined in webSudoCryptoProvider.ts:258</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -502,7 +533,7 @@
 									<h5>data: <span class="tsd-signature-type">ArrayBuffer</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> iv: <span class="tsd-signature-type">ArrayBuffer</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> ivOrOptions: <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -520,7 +551,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.exportKeys</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:403</li>
+									<li>Defined in webSudoCryptoProvider.ts:419</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">KeyData</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -538,7 +569,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.generateHash</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:374</li>
+									<li>Defined in webSudoCryptoProvider.ts:390</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -562,7 +593,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.generateKeyPair</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:381</li>
+									<li>Defined in webSudoCryptoProvider.ts:397</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -586,7 +617,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.generateRandomData</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:248</li>
+									<li>Defined in webSudoCryptoProvider.ts:252</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -610,7 +641,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.generateSymmetricKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:111</li>
+									<li>Defined in webSudoCryptoProvider.ts:115</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -634,7 +665,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.generateSymmetricKeyFromPassword</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:127</li>
+									<li>Defined in webSudoCryptoProvider.ts:131</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -669,7 +700,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.getNamespace</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:56</li>
+									<li>Defined in webSudoCryptoProvider.ts:60</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -687,7 +718,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.getPassword</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:70</li>
+									<li>Defined in webSudoCryptoProvider.ts:74</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -711,7 +742,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.getPrivateKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:187</li>
+									<li>Defined in webSudoCryptoProvider.ts:191</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -735,7 +766,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.getPublicKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:225</li>
+									<li>Defined in webSudoCryptoProvider.ts:229</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -759,7 +790,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.getServiceName</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:60</li>
+									<li>Defined in webSudoCryptoProvider.ts:64</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -777,7 +808,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.getSymmetricKey</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:100</li>
+									<li>Defined in webSudoCryptoProvider.ts:104</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -801,10 +832,41 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.removeAllKeys</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:241</li>
+									<li>Defined in webSudoCryptoProvider.ts:245</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="symmetricEncryptionOptions" class="tsd-anchor"></a>
+					<h3>symmetric<wbr>Encryption<wbr>Options</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">symmetric<wbr>Encryption<wbr>Options<span class="tsd-signature-symbol">(</span>ivOrOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>algorithmName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>iv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> }</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in webSudoCryptoProvider.ts:501</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> ivOrOptions: <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SymmetricEncryptionOptions</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>algorithmName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>iv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> }</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter">
+									<h5>algorithm<wbr>Name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>iv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span></h5>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</section>
@@ -819,7 +881,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of SudoCryptoProvider.updatePassword</p>
 								<ul>
-									<li>Defined in webSudoCryptoProvider.ts:81</li>
+									<li>Defined in webSudoCryptoProvider.ts:85</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -869,6 +931,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="WebSudoCryptoProvider.html#addSymmetricKey" class="tsd-kind-icon">add<wbr>Symmetric<wbr>Key</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="WebSudoCryptoProvider.html#cryptoAlgorithmName" class="tsd-kind-icon">crypto<wbr>Algorithm<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="WebSudoCryptoProvider.html#decryptWithPrivateKey" class="tsd-kind-icon">decrypt<wbr>With<wbr>Private<wbr>Key</a>
@@ -935,6 +1000,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="WebSudoCryptoProvider.html#removeAllKeys" class="tsd-kind-icon">remove<wbr>All<wbr>Keys</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="WebSudoCryptoProvider.html#symmetricEncryptionOptions" class="tsd-kind-icon">symmetric<wbr>Encryption<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="WebSudoCryptoProvider.html#updatePassword" class="tsd-kind-icon">update<wbr>Password</a>

@@ -1266,10 +1266,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sudoplatform/sudo-common@^5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@sudoplatform/sudo-common/-/sudo-common-5.5.0.tgz#745649c91c9e7adb84f781e99650e8b9471dfb70"
-  integrity sha512-YgLKHtxp5r7UUzSIPIRL08XxhUIrWFkMr5VCyeS10ulyCCCC69yuhkuW11R40bd+48Xvz+liio631D+dyA8UKw==
+"@sudoplatform/sudo-common@^5.7.0":
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/@sudoplatform/sudo-common/-/sudo-common-5.7.0.tgz#dba58a8659d3c700c3a9513b24b5cf5f672ecd9f"
+  integrity sha512-FvvGItHYCHru7IkJJ0Bt+rUi6ecQKlieaE8CxoEpcrNkmPHgWLV61MCfOULvWkRVvgNjebx7pMR/9yr4UQVJQw==
   dependencies:
     apollo-client "^2.6.10"
     browser-bunyan "^1.6.3"

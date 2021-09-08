@@ -1,13 +1,12 @@
 import {
+  Buffer as BufferUtil,
   DefaultSudoKeyArchive,
   DefaultSudoKeyManager,
   KeyArchiveIncorrectPasswordError,
   KeyArchiveKeyType,
   KeyNotFoundError,
 } from '@sudoplatform/sudo-common'
-import { Buffer as BufferUtil } from '@sudoplatform/sudo-common'
 import { v4 } from 'uuid'
-
 import { WebSudoCryptoProvider } from './webSudoCryptoProvider'
 
 global.crypto = require('isomorphic-webcrypto')
@@ -406,14 +405,14 @@ describe('sudoCryptoProvider', () => {
       })
       await archiver.loadKeys()
 
-      const archive = await archiver.archive('password')
+      const archive = await archiver.archive(BufferUtil.fromString('password'))
 
       cryptoProvider.removeAllKeys()
 
       const unarchiver = new DefaultSudoKeyArchive(keyManager, {
         archiveData: archive,
       })
-      await unarchiver.unarchive('password')
+      await unarchiver.unarchive(BufferUtil.fromString('password'))
       await unarchiver.saveKeys()
 
       for (const name of names) {
@@ -462,16 +461,16 @@ describe('sudoCryptoProvider', () => {
       })
       await archiver.loadKeys()
 
-      const archive = await archiver.archive('password')
+      const archive = await archiver.archive(BufferUtil.fromString('password'))
 
       cryptoProvider.removeAllKeys()
 
       const unarchiver = new DefaultSudoKeyArchive(keyManager, {
         archiveData: archive,
       })
-      await expect(unarchiver.unarchive('wrong')).rejects.toThrow(
-        new KeyArchiveIncorrectPasswordError(),
-      )
+      await expect(
+        unarchiver.unarchive(BufferUtil.fromString('wrong')),
+      ).rejects.toThrow(new KeyArchiveIncorrectPasswordError())
     })
   })
 })
