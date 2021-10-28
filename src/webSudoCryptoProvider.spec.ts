@@ -7,6 +7,7 @@ import {
   KeyNotFoundError,
 } from '@sudoplatform/sudo-common'
 import { v4 } from 'uuid'
+import { LocalStorageStore } from './localStorageStore'
 import { WebSudoCryptoProvider } from './webSudoCryptoProvider'
 
 global.crypto = require('isomorphic-webcrypto')
@@ -374,7 +375,7 @@ describe('sudoCryptoProvider', () => {
       expect(archive.byteLength).toBeLessThan(325 * 1024)
     })
 
-    it('should be able to have a secure archive created from it that can be reimported', async () => {
+    it('in memory store - should be able to have a secure archive created from it that can be reimported', async () => {
       const keyManager = new DefaultSudoKeyManager(cryptoProvider)
 
       const promises: Promise<void>[] = []
@@ -407,7 +408,7 @@ describe('sudoCryptoProvider', () => {
 
       const archive = await archiver.archive(BufferUtil.fromString('password'))
 
-      cryptoProvider.removeAllKeys()
+      await cryptoProvider.removeAllKeys()
 
       const unarchiver = new DefaultSudoKeyArchive(keyManager, {
         archiveData: archive,
@@ -428,6 +429,69 @@ describe('sudoCryptoProvider', () => {
           )
         expect(BufferUtil.toString(symmetricKeyUnsealed!)).toEqual(name)
       }
+    })
+
+    it('local storage based async store - should be able to have a secure archive created from it that can be reimported', async () => {
+      const localStorageCryptoProvider = new WebSudoCryptoProvider(
+        'namespace',
+        'servicename',
+        new LocalStorageStore(window.localStorage),
+      )
+      const keyManager = new DefaultSudoKeyManager(localStorageCryptoProvider)
+
+      const promises: Promise<void>[] = []
+      const names: string[] = []
+      for (let i = 0; i < 10; ++i) {
+        const name = v4()
+        promises.push(keyManager.generateKeyPair(name))
+        promises.push(keyManager.generateSymmetricKey(name))
+        names.push(name)
+      }
+      await Promise.all(promises)
+
+      const publicKeySealed: Record<string, ArrayBuffer> = {}
+      const symmetricKeySealed: Record<string, ArrayBuffer> = {}
+      for (const name of names) {
+        publicKeySealed[name] = await keyManager.encryptWithPublicKey(
+          name,
+          Buffer.from(name),
+        )
+        symmetricKeySealed[name] = await keyManager.encryptWithSymmetricKeyName(
+          name,
+          Buffer.from(name),
+        )
+      }
+
+      const archiver = new DefaultSudoKeyArchive(keyManager, {
+        excludedKeyTypes: new Set([KeyArchiveKeyType.PublicKey]),
+      })
+      await archiver.loadKeys()
+
+      const archive = await archiver.archive(BufferUtil.fromString('password'))
+
+      await localStorageCryptoProvider.removeAllKeys()
+
+      const unarchiver = new DefaultSudoKeyArchive(keyManager, {
+        archiveData: archive,
+      })
+      await unarchiver.unarchive(BufferUtil.fromString('password'))
+      await unarchiver.saveKeys()
+
+      for (const name of names) {
+        const privateKeyUnsealed = await keyManager.decryptWithPrivateKey(
+          name,
+          publicKeySealed[name],
+        )
+        expect(BufferUtil.toString(privateKeyUnsealed!)).toEqual(name)
+        const symmetricKeyUnsealed =
+          await keyManager.decryptWithSymmetricKeyName(
+            name,
+            symmetricKeySealed[name],
+          )
+        expect(BufferUtil.toString(symmetricKeyUnsealed!)).toEqual(name)
+      }
+
+      await localStorageCryptoProvider.removeAllKeys()
     })
 
     it('should throw KeyArchivePasswordError if password is incorrect', async () => {
