@@ -1266,14 +1266,15 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sudoplatform/sudo-common@^5.7.0":
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/@sudoplatform/sudo-common/-/sudo-common-5.7.0.tgz#dba58a8659d3c700c3a9513b24b5cf5f672ecd9f"
-  integrity sha512-FvvGItHYCHru7IkJJ0Bt+rUi6ecQKlieaE8CxoEpcrNkmPHgWLV61MCfOULvWkRVvgNjebx7pMR/9yr4UQVJQw==
+"@sudoplatform/sudo-common@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@sudoplatform/sudo-common/-/sudo-common-6.0.0.tgz#e99db5cf9bc100c9eb2f4481b24f1a79c6f2741b"
+  integrity sha512-TS967uxhvifq/05ixERqbJaL+maZLesXOPluOmgwPAenWtfkBEsdVfbpxFYIQhenFQMYSTWBf2iAuTjLjDUmng==
   dependencies:
     apollo-client "^2.6.10"
     browser-bunyan "^1.6.3"
     fflate "^0.7.1"
+    graphql "^15.6.1"
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -2934,6 +2935,11 @@ graphql@^15.5.1:
   version "15.5.1"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.5.1.tgz#f2f84415d8985e7b84731e7f3536f8bb9d383aad"
   integrity sha512-FeTRX67T3LoE3LWAxxOlW2K3Bz+rMYAC18rRguK4wgXaTZMiJwSUwDmPFo3UadAKbzirKIg5Qy+sNJXbpPRnQw==
+
+graphql@^15.6.1:
+  version "15.7.2"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.7.2.tgz#85ab0eeb83722977151b3feb4d631b5f2ab287ef"
+  integrity sha512-AnnKk7hFQFmU/2I9YSQf3xw44ctnSFCfp3zE0N6W174gqe9fWG/2rKaKxROK7CcI3XtERpjEKFqts8o319Kf7A==
 
 handlebars@^4.7.7:
   version "4.7.7"

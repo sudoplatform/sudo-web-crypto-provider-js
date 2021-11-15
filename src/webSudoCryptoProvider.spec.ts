@@ -190,6 +190,29 @@ describe('sudoCryptoProvider', () => {
     })
   })
 
+  describe('doesSymmetricKeyExists', () => {
+    it('should return true if the key exists', async () => {
+      const symmetricKeyBuffer = BufferUtil.fromString(symmetricKey)
+
+      await cryptoProvider.addSymmetricKey(
+        symmetricKeyBuffer,
+        'testKey.symmetric',
+      )
+
+      const result = await cryptoProvider.doesSymmetricKeyExists(
+        'testKey.symmetric',
+      )
+      expect(result).toBeTruthy()
+    })
+
+    it('should return false if the key does not exists', async () => {
+      const result = await cryptoProvider.doesSymmetricKeyExists(
+        'random.symmetric',
+      )
+      expect(result).toBeFalsy()
+    })
+  })
+
   describe('generateSymmetricKey', () => {
     it('should generate and store new symmetric key', async () => {
       const existingKey = await cryptoProvider.getSymmetricKey(
@@ -271,6 +294,22 @@ describe('sudoCryptoProvider', () => {
         'testKey.keyPair',
       )
       expect(generatedPrivateKey).toBeDefined()
+    })
+  })
+
+  describe('doesPrivateKeyExists', () => {
+    it('should return true if the key exists', async () => {
+      await cryptoProvider.generateKeyPair('testKey.keyPair')
+
+      const result = await cryptoProvider.doesPrivateKeyExists(
+        'testKey.keyPair',
+      )
+      expect(result).toBeTruthy()
+    })
+
+    it('should return false if the key does not exists', async () => {
+      const result = await cryptoProvider.doesPrivateKeyExists('random.keyPair')
+      expect(result).toBeFalsy()
     })
   })
 

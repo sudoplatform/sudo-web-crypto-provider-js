@@ -110,6 +110,10 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     return Promise.resolve(symmetricKey)
   }
 
+  public async doesSymmetricKeyExists(name: string): Promise<boolean> {
+    return (await this.getSymmetricKey(name)) !== undefined
+  }
+
   public async deleteSymmetricKey(name: string): Promise<void> {
     name = this.createKeySearchTerm(name, KeyType.Symmetric)
     await this.#store.removeItem(name)
@@ -180,6 +184,10 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     } else {
       return Base64.decode(key as string)
     }
+  }
+
+  public async doesPrivateKeyExists(name: string): Promise<boolean> {
+    return (await this.getPrivateKey(name)) !== undefined
   }
 
   public async addPublicKey(key: ArrayBuffer, name: string): Promise<void> {
