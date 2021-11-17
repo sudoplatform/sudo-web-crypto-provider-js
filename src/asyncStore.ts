@@ -3,6 +3,11 @@
  */
 export interface AsyncStore {
   /**
+   * Returns the keys of all the key/value pairs in the key store.
+   */
+  getKeys(): Promise<string[]>
+
+  /**
    * Returns the current value associated with the given key, or null if the
    * given key does not exist in the list associated with the object.
    */

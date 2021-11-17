@@ -11,6 +11,12 @@ export class BrowserExtensionStore<Schema> implements AsyncStore {
     this.keyPrefix = namesace ? namesace + '__' : ''
   }
 
+  async getKeys(): Promise<string[]> {
+    return Object.keys(await this.storageArea.get())
+      .filter((key) => key.startsWith(this.keyPrefix))
+      .map((key) => key.slice(this.keyPrefix.length))
+  }
+
   async getItem<K extends keyof Schema & string>(
     key: K,
   ): Promise<Schema[K] | null> {

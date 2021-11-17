@@ -423,12 +423,10 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
   public async exportKeys(): Promise<KeyData[]> {
     const keys: KeyData[] = []
 
-    // The store has only 1 single key / value pair.
-    // The single value constains all of the actual key / value pairs
-    const value = Object.values(this.#store)[0]
-    const entries = Object.entries(value)
+    const storeKeys = await this.#store.getKeys()
+    for (const k of storeKeys) {
+      const v = await this.#store.getItem(k)
 
-    for (const [k, v] of entries) {
       if (k.includes(KeyType.PrivateKey)) {
         keys.push({
           name: this.recoverKeyName(k, KeyType.PrivateKey),

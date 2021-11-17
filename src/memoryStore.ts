@@ -6,6 +6,10 @@ import { AsyncStore } from './asyncStore'
 export class MemoryStore implements AsyncStore {
   data: Partial<Record<string, unknown>> = {}
 
+  async getKeys(): Promise<string[]> {
+    return Object.keys(this.data)
+  }
+
   async getItem(key: string): Promise<unknown | null> {
     return this.data[key] ?? null
   }

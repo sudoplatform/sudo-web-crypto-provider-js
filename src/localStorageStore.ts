@@ -4,21 +4,25 @@ import { AsyncStore } from './asyncStore'
  * A local storage based implementation of an AsyncStore for testing purposes only
  */
 export class LocalStorageStore implements AsyncStore {
-  constructor(private storageArea = window.localStorage) {}
+  constructor(private storage = window.localStorage) {}
+
+  async getKeys(): Promise<string[]> {
+    return Object.keys(this.storage)
+  }
 
   async getItem(key: string): Promise<unknown | null> {
-    return this.storageArea.getItem(key)
+    return this.storage.getItem(key)
   }
 
   async setItem(key: string, value: unknown): Promise<void> {
-    this.storageArea.setItem(key, value as string)
+    this.storage.setItem(key, value as string)
   }
 
   async removeItem(key: string): Promise<void> {
-    this.storageArea.removeItem(key)
+    this.storage.removeItem(key)
   }
 
   async clear(): Promise<void> {
-    this.storageArea.clear()
+    this.storage.clear()
   }
 }
