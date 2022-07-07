@@ -269,6 +269,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       {
         name: options.algorithmName,
         iv: options.iv,
+        tagLength: options.algorithmName == 'AES-GCM' ? 128 : undefined,
       },
       secretKey,
       data,
@@ -487,6 +488,8 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     switch (algorithm) {
       case EncryptionAlgorithm.AesCbcPkcs7Padding:
         return 'AES-CBC'
+      case EncryptionAlgorithm.AesGcmNoPadding:
+        return 'AES-GCM'
       case EncryptionAlgorithm.RsaOaepSha1:
         return 'RSA-OAEP'
       default:

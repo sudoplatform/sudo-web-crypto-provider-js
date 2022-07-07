@@ -2,6 +2,7 @@ import {
   Buffer as BufferUtil,
   DefaultSudoKeyArchive,
   DefaultSudoKeyManager,
+  EncryptionAlgorithm,
   KeyArchiveIncorrectPasswordError,
   KeyArchiveKeyType,
   KeyNotFoundError,
@@ -248,6 +249,32 @@ describe('sudoCryptoProvider', () => {
       const decryptedBuffer = await cryptoProvider.decryptWithSymmetricKeyName(
         'testKey.symmetric',
         encryptedBuffer,
+      )
+
+      const decrypted = BufferUtil.toString(decryptedBuffer)
+      expect(decrypted).toBe('data to encrypt')
+    })
+
+    it('should encrypt then decrypt AES-GCM', async () => {
+      await cryptoProvider.generateSymmetricKey('testKey.symmetric')
+
+      const iv = await cryptoProvider.generateRandomData(12)
+      const encryptedBuffer = await cryptoProvider.encryptWithSymmetricKeyName(
+        'testKey.symmetric',
+        BufferUtil.fromString('data to encrypt'),
+        {
+          iv,
+          algorithm: EncryptionAlgorithm.AesGcmNoPadding,
+        },
+      )
+
+      const decryptedBuffer = await cryptoProvider.decryptWithSymmetricKeyName(
+        'testKey.symmetric',
+        encryptedBuffer,
+        {
+          iv,
+          algorithm: EncryptionAlgorithm.AesGcmNoPadding,
+        },
       )
 
       const decrypted = BufferUtil.toString(decryptedBuffer)
