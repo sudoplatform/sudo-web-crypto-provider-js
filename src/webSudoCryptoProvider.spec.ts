@@ -191,7 +191,7 @@ describe('sudoCryptoProvider', () => {
     })
   })
 
-  describe('doesSymmetricKeyExists', () => {
+  describe('doesSymmetricKeyExist', () => {
     it('should return true if the key exists', async () => {
       const symmetricKeyBuffer = BufferUtil.fromString(symmetricKey)
 
@@ -200,14 +200,14 @@ describe('sudoCryptoProvider', () => {
         'testKey.symmetric',
       )
 
-      const result = await cryptoProvider.doesSymmetricKeyExists(
+      const result = await cryptoProvider.doesSymmetricKeyExist(
         'testKey.symmetric',
       )
       expect(result).toBeTruthy()
     })
 
     it('should return false if the key does not exists', async () => {
-      const result = await cryptoProvider.doesSymmetricKeyExists(
+      const result = await cryptoProvider.doesSymmetricKeyExist(
         'random.symmetric',
       )
       expect(result).toBeFalsy()
@@ -303,6 +303,24 @@ describe('sudoCryptoProvider', () => {
     })
   })
 
+  describe('deletePublicKey', () => {
+    it('should remove existing public key', async () => {
+      await cryptoProvider.generateKeyPair('testKey.publicKey')
+
+      let publicKey = await cryptoProvider.getPublicKey('testKey.publicKey')
+      expect(publicKey).toBeTruthy()
+
+      await cryptoProvider.deletePublicKey('testKey.publicKey')
+
+      publicKey = await cryptoProvider.getPublicKey('testKey.publicKey')
+      expect(publicKey).toBeUndefined()
+    })
+
+    it('should return silently if the key does not exist', async () => {
+      await cryptoProvider.deletePublicKey('random.publicKey')
+    })
+  })
+
   describe('generateKeyPair', () => {
     it('should generate and store new key pair', async () => {
       const existingPublicKey = await cryptoProvider.getPublicKey(
@@ -324,18 +342,16 @@ describe('sudoCryptoProvider', () => {
     })
   })
 
-  describe('doesPrivateKeyExists', () => {
+  describe('doesPrivateKeyExist', () => {
     it('should return true if the key exists', async () => {
       await cryptoProvider.generateKeyPair('testKey.keyPair')
 
-      const result = await cryptoProvider.doesPrivateKeyExists(
-        'testKey.keyPair',
-      )
+      const result = await cryptoProvider.doesPrivateKeyExist('testKey.keyPair')
       expect(result).toBeTruthy()
     })
 
     it('should return false if the key does not exists', async () => {
-      const result = await cryptoProvider.doesPrivateKeyExists('random.keyPair')
+      const result = await cryptoProvider.doesPrivateKeyExist('random.keyPair')
       expect(result).toBeFalsy()
     })
   })
@@ -419,6 +435,113 @@ describe('sudoCryptoProvider', () => {
         'base64',
       )
       expect(publicKeySPKI).toMatch(/^MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A/)
+    })
+  })
+
+  describe('generateSignatureWithPrivateKey', () => {
+    it('should throw KeyNotFoundError when private key not set', async () => {
+      await expect(
+        cryptoProvider.generateSignatureWithPrivateKey(
+          'random.keyPair',
+          BufferUtil.fromString('data to sign'),
+        ),
+      ).rejects.toThrow(new KeyNotFoundError())
+    })
+
+    it('should sign with private key then verify with public key', async () => {
+      await cryptoProvider.generateKeyPair('testKey.keyPair')
+
+      const signature = await cryptoProvider.generateSignatureWithPrivateKey(
+        'testKey.keyPair',
+        BufferUtil.fromString('data to sign'),
+      )
+      expect(signature).toBeTruthy()
+
+      const verified = await cryptoProvider.verifySignatureWithPublicKey(
+        'testKey.keyPair',
+        BufferUtil.fromString('data to sign'),
+        signature,
+      )
+
+      expect(verified).toBe(true)
+    })
+  })
+
+  describe('verifySignatureWithPublicKey', () => {
+    it('should throw KeyNotFoundError when public key not set', async () => {
+      await expect(
+        cryptoProvider.verifySignatureWithPublicKey(
+          'random.keyPair',
+          BufferUtil.fromString('data to sign'),
+          BufferUtil.fromString('signature'),
+        ),
+      ).rejects.toThrow(new KeyNotFoundError())
+    })
+
+    it('should fail with verifying with different key or data', async () => {
+      await cryptoProvider.generateKeyPair('testKey.keyPair')
+      await cryptoProvider.generateKeyPair('testKey.keyPair2')
+
+      const signature = await cryptoProvider.generateSignatureWithPrivateKey(
+        'testKey.keyPair',
+        BufferUtil.fromString('data to sign'),
+      )
+      let verified = await cryptoProvider.verifySignatureWithPublicKey(
+        'testKey.keyPair',
+        BufferUtil.fromString('data to sign'),
+        BufferUtil.fromString('signature'),
+      )
+      expect(verified).toBe(false)
+
+      verified = await cryptoProvider.verifySignatureWithPublicKey(
+        'testKey.keyPair',
+        BufferUtil.fromString('different data to sign'),
+        signature,
+      )
+      expect(verified).toBe(false)
+
+      verified = await cryptoProvider.verifySignatureWithPublicKey(
+        'testKey.keyPair2',
+        BufferUtil.fromString('data to encrypt'),
+        signature,
+      )
+      expect(verified).toBe(false)
+    })
+  })
+
+  describe('RSA crypto using non default key size', () => {
+    it('should encrypt with public key then decrypt with private key', async () => {
+      const cryptoProvider = new WebSudoCryptoProvider(
+        'namespace',
+        'servicename',
+        undefined,
+        4096,
+      )
+      await cryptoProvider.generateKeyPair('testKey.keyPair')
+
+      const encryptedBuffer = await cryptoProvider.encryptWithPublicKey(
+        'testKey.keyPair',
+        BufferUtil.fromString('data to encrypt'),
+      )
+
+      const decryptedBuffer = await cryptoProvider.decryptWithPrivateKey(
+        'testKey.keyPair',
+        encryptedBuffer,
+      )
+
+      const decrypted = BufferUtil.toString(decryptedBuffer)
+
+      expect(decrypted).toBe('data to encrypt')
+
+      new Uint8Array(encryptedBuffer).fill(0)
+      new Uint8Array(decryptedBuffer).fill(0)
+
+      expect(new Uint8Array(encryptedBuffer)).toEqual(
+        new Uint8Array(encryptedBuffer.byteLength),
+      )
+      expect(new Uint8Array(decryptedBuffer)).toEqual(
+        new Uint8Array(decryptedBuffer.byteLength),
+      )
     })
   })
 

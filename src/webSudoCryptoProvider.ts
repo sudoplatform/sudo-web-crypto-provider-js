@@ -34,24 +34,34 @@ export enum KeyFormat {
 }
 
 export class WebSudoCryptoProvider implements SudoCryptoProvider {
-  constructor(namespace: string, serviceName: string, asyncStore?: AsyncStore) {
+  constructor(
+    namespace: string,
+    serviceName: string,
+    asyncStore?: AsyncStore,
+    rsaKeySize?: number,
+  ) {
     this.#namespace = namespace
     this.#serviceName = serviceName
     this.#store = asyncStore ?? new MemoryStore()
+    this.#rsaKeySize = rsaKeySize ?? WebSudoCryptoProvider.Constants.rsaKeySize
   }
   private static readonly Constants = {
     ivSize: SudoCryptoProviderDefaults.aesIVSize,
     publicKeyEncryptionAlgorithm: 'RSA-OAEP',
     symmetricKeyEncryptionAlgorithm: 'AES-CBC',
     symmetricKeySize: SudoCryptoProviderDefaults.aesKeySize,
+    rsaKeySize: SudoCryptoProviderDefaults.rsaKeySize,
     publicKeyEncryptionHashingAlgorithm: 'SHA-1',
     pbkdfAlgorithm: 'PBKDF2',
     pbkdfHashingAlgorithm: 'SHA-256',
     pbkdfDefaultRounds: SudoCryptoProviderDefaults.pbkdfRounds,
+    signatureGenerationAlgorithm: 'RSASSA-PKCS1-v1_5',
+    signatureHashingAlgorithm: 'SHA-256',
   }
 
   readonly #namespace: string
   readonly #serviceName: string
+  readonly #rsaKeySize: number
   #store: AsyncStore
 
   public getNamespace(): string {
@@ -110,7 +120,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     return Promise.resolve(symmetricKey)
   }
 
-  public async doesSymmetricKeyExists(name: string): Promise<boolean> {
+  public async doesSymmetricKeyExist(name: string): Promise<boolean> {
     return (await this.getSymmetricKey(name)) !== undefined
   }
 
@@ -171,6 +181,71 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     await this.#store.removeItem(publicKeyName)
   }
 
+  public async deletePublicKey(name: string): Promise<void> {
+    const publicKeyName = this.createKeySearchTerm(name, KeyType.PublicKey)
+    await this.#store.removeItem(publicKeyName)
+  }
+
+  public async generateSignatureWithPrivateKey(
+    name: string,
+    data: ArrayBuffer,
+  ): Promise<ArrayBuffer> {
+    const key = await this.getPrivateKey(name)
+    if (!key) {
+      return Promise.reject(new KeyNotFoundError())
+    }
+    const privateKey = await crypto.subtle.importKey(
+      KeyFormat.Pkcs8,
+      key,
+      {
+        name: WebSudoCryptoProvider.Constants.signatureGenerationAlgorithm,
+        hash: {
+          name: WebSudoCryptoProvider.Constants.signatureHashingAlgorithm,
+        },
+      },
+      true,
+      ['sign'],
+    )
+    return await crypto.subtle.sign(
+      WebSudoCryptoProvider.Constants.signatureGenerationAlgorithm,
+      privateKey,
+      data,
+    )
+  }
+
+  public async verifySignatureWithPublicKey(
+    name: string,
+    data: ArrayBuffer,
+    signature: ArrayBuffer,
+  ): Promise<boolean> {
+    name = this.createKeySearchTerm(name, KeyType.PublicKey)
+    const key = await this.#store.getItem(name)
+    if (!key) {
+      return Promise.reject(new KeyNotFoundError())
+    }
+    const keyData = Base64.decode(key as string)
+
+    const publicKey = await crypto.subtle.importKey(
+      KeyFormat.Spki,
+      keyData,
+      {
+        name: WebSudoCryptoProvider.Constants.signatureGenerationAlgorithm,
+        hash: {
+          name: WebSudoCryptoProvider.Constants.signatureHashingAlgorithm,
+        },
+      },
+      true,
+      ['verify'],
+    )
+
+    return await crypto.subtle.verify(
+      WebSudoCryptoProvider.Constants.signatureGenerationAlgorithm,
+      publicKey,
+      signature,
+      data,
+    )
+  }
+
   public async addPrivateKey(key: ArrayBuffer, name: string): Promise<void> {
     name = this.createKeySearchTerm(name, KeyType.PrivateKey)
     await this.#store.setItem(name, Base64.encode(key))
@@ -186,7 +261,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     }
   }
 
-  public async doesPrivateKeyExists(name: string): Promise<boolean> {
+  public async doesPrivateKeyExist(name: string): Promise<boolean> {
     return (await this.getPrivateKey(name)) !== undefined
   }
 
@@ -395,7 +470,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     const keyPair = await crypto.subtle.generateKey(
       {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
-        modulusLength: 2048,
+        modulusLength: this.#rsaKeySize,
         publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
         hash: {
           name: WebSudoCryptoProvider.Constants
