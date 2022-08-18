@@ -59,10 +59,12 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     signatureHashingAlgorithm: 'SHA-256',
   }
 
+  /* eslint-disable tree-shaking/no-side-effects-in-initialization */
   readonly #namespace: string
   readonly #serviceName: string
   readonly #rsaKeySize: number
   #store: AsyncStore
+  /* eslint-enable tree-shaking/no-side-effects-in-initialization */
 
   public getNamespace(): string {
     return this.#namespace

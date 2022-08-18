@@ -1,7 +1,8 @@
 .cache
 config
 docs/
-lib
+lib/
+cjs/
 node_modules
 src/gen
 scratch
@@ -9,3 +10,4 @@ yarn-error.log
 coverage
 .yalc
 yalc.lock
+

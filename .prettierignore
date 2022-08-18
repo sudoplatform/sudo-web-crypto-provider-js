@@ -1,2 +1,5 @@
+cjs/
+docs/
 lib/
 coverage/
+.yarn
