@@ -1,5 +1,6 @@
 cjs/
 docs/
 lib/
+types/
 coverage/
 .yarn

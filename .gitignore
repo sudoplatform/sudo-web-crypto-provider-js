@@ -3,6 +3,7 @@ config
 docs/
 lib/
 cjs/
+types/
 node_modules
 src/gen
 scratch
@@ -10,4 +11,4 @@ yarn-error.log
 coverage
 .yalc
 yalc.lock
-
+.npmrc

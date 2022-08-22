@@ -15,29 +15,38 @@
     "test": "jest",
     "build": "yarn clean && yarn build:transpile && yarn build:verify && yarn build:doc",
     "build:verify": "yarn audit && yarn lint && yarn test --coverage",
-    "build:transpile": "concurrently \"yarn build:transpile:cjs\" \"yarn build:transpile:esm\"",
+    "build:transpile": "concurrently \"yarn build:transpile:declarations\" \"yarn build:transpile:cjs\" \"yarn build:transpile:esm\"",
     "build:transpile:cjs": "tsc --project tsconfig.commonjs.json",
     "build:transpile:esm": "tsc",
+    "build:transpile:declarations": "tsc --project tsconfig.declarations.json",
     "build:doc": "typedoc --excludePrivate --out docs src/index.ts"
   },
   "main": "./cjs/index.js",
-  "types": "./cjs/index.d.ts",
-  "module": "./lib/index.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./cjs/index.js",
+      "default": "./lib/index.js"
+    }
+  },
   "sideEffects": false,
   "files": [
     "cjs",
-    "lib"
+    "lib",
+    "types"
   ],
   "peerDependencies": {
     "@sudoplatform/sudo-common": "^8.0.0"
   },
   "devDependencies": {
-    "@sudoplatform/sudo-common": "^8.0.0",
+    "@sudoplatform/sudo-common": "^8.0.1",
     "@types/firefox-webext-browser": "^94.0.1",
     "@types/jest": "^27.0.1",
     "@types/uuid": "^8.3.1",
-    "@typescript-eslint/eslint-plugin": "^5.33.1",
-    "@typescript-eslint/parser": "^5.33.1",
+    "@typescript-eslint/eslint-plugin": "^5.34.0",
+    "@typescript-eslint/parser": "^5.34.0",
     "browser-bunyan": "^1.6.3",
     "concurrently": "^7.3.0",
     "eslint": "^8.22.0",
