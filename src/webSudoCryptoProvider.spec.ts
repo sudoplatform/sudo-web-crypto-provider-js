@@ -11,7 +11,7 @@ import { v4 } from 'uuid'
 import { LocalStorageStore } from './localStorageStore'
 import { WebSudoCryptoProvider } from './webSudoCryptoProvider'
 
-global.crypto = require('isomorphic-webcrypto')
+global.crypto = require('crypto').webcrypto
 // Workaround for a jest bug that causes `instanceof` to return a
 // wrong for `ArrayBuffer` when using webcrypto polyfill with
 // `jsdom` test environment.
@@ -406,12 +406,12 @@ describe('sudoCryptoProvider', () => {
       }
 
       await expect(
-        global.crypto.subtle.importKey(
+        crypto.subtle.importKey(
           'pkcs8',
           toArrayBuffer(privateKeyPKCS8Binary),
           { name: 'RSA-OAEP', hash: 'SHA-1' },
           true,
-          ['encrypt'],
+          ['decrypt'],
         ),
       ).resolves.toBeDefined()
     })
