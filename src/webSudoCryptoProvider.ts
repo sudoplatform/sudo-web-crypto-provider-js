@@ -8,6 +8,8 @@ import {
   KeyDataKeyType,
   PublicKey,
   PublicKeyFormat,
+  SignatureAlgorithm,
+  SignatureOptions,
   SudoCryptoProvider,
   SudoCryptoProviderDefaults,
   SymmetricEncryptionOptions,
@@ -191,7 +193,13 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
   public async generateSignatureWithPrivateKey(
     name: string,
     data: ArrayBuffer,
+    options?: SignatureOptions,
   ): Promise<ArrayBuffer> {
+    const signatureAlgorithm =
+      options?.algorithm ?? SignatureAlgorithm.RsaPkcs15Sha256
+    const { signatureGenerationAlgorithm, signatureHashingAlgorithm } =
+      this.signatureAlgorithms(signatureAlgorithm)
+
     const key = await this.getPrivateKey(name)
     if (!key) {
       return Promise.reject(new KeyNotFoundError())
@@ -200,16 +208,16 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       KeyFormat.Pkcs8,
       key,
       {
-        name: WebSudoCryptoProvider.Constants.signatureGenerationAlgorithm,
+        name: signatureGenerationAlgorithm,
         hash: {
-          name: WebSudoCryptoProvider.Constants.signatureHashingAlgorithm,
+          name: signatureHashingAlgorithm,
         },
       },
       true,
       ['sign'],
     )
     return await crypto.subtle.sign(
-      WebSudoCryptoProvider.Constants.signatureGenerationAlgorithm,
+      signatureGenerationAlgorithm,
       privateKey,
       data,
     )
@@ -219,7 +227,13 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     name: string,
     data: ArrayBuffer,
     signature: ArrayBuffer,
+    options?: SignatureOptions,
   ): Promise<boolean> {
+    const signatureAlgorithm =
+      options?.algorithm ?? SignatureAlgorithm.RsaPkcs15Sha256
+    const { signatureGenerationAlgorithm, signatureHashingAlgorithm } =
+      this.signatureAlgorithms(signatureAlgorithm)
+
     name = this.createKeySearchTerm(name, KeyType.PublicKey)
     const key = await this.#store.getItem(name)
     if (!key) {
@@ -231,9 +245,9 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       KeyFormat.Spki,
       keyData,
       {
-        name: WebSudoCryptoProvider.Constants.signatureGenerationAlgorithm,
+        name: signatureGenerationAlgorithm,
         hash: {
-          name: WebSudoCryptoProvider.Constants.signatureHashingAlgorithm,
+          name: signatureHashingAlgorithm,
         },
       },
       true,
@@ -241,7 +255,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     )
 
     return await crypto.subtle.verify(
-      WebSudoCryptoProvider.Constants.signatureGenerationAlgorithm,
+      signatureGenerationAlgorithm,
       publicKey,
       signature,
       data,
@@ -569,6 +583,23 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
         return 'AES-GCM'
       case EncryptionAlgorithm.RsaOaepSha1:
         return 'RSA-OAEP'
+      default:
+        throw new UnrecognizedAlgorithmError()
+    }
+  }
+
+  signatureAlgorithms = (
+    algorithm: SignatureAlgorithm,
+  ): {
+    signatureGenerationAlgorithm: string
+    signatureHashingAlgorithm: string
+  } => {
+    switch (algorithm) {
+      case SignatureAlgorithm.RsaPkcs15Sha256:
+        return {
+          signatureGenerationAlgorithm: 'RSASSA-PKCS1-v1_5',
+          signatureHashingAlgorithm: 'SHA-256',
+        }
       default:
         throw new UnrecognizedAlgorithmError()
     }

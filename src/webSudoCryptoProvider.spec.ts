@@ -6,6 +6,8 @@ import {
   KeyArchiveIncorrectPasswordError,
   KeyArchiveKeyType,
   KeyNotFoundError,
+  SignatureAlgorithm,
+  UnrecognizedAlgorithmError,
 } from '@sudoplatform/sudo-common'
 import { v4 } from 'uuid'
 import { LocalStorageStore } from './localStorageStore'
@@ -465,6 +467,44 @@ describe('sudoCryptoProvider', () => {
 
       expect(verified).toBe(true)
     })
+
+    it('should sign with private key then verify with public key specifying algorithm', async () => {
+      await cryptoProvider.generateKeyPair('testKey.keyPair')
+
+      const signature = await cryptoProvider.generateSignatureWithPrivateKey(
+        'testKey.keyPair',
+        BufferUtil.fromString('data to sign'),
+        {
+          algorithm: SignatureAlgorithm.RsaPkcs15Sha256,
+        },
+      )
+      expect(signature).toBeTruthy()
+
+      const verified = await cryptoProvider.verifySignatureWithPublicKey(
+        'testKey.keyPair',
+        BufferUtil.fromString('data to sign'),
+        signature,
+        {
+          algorithm: SignatureAlgorithm.RsaPkcs15Sha256,
+        },
+      )
+
+      expect(verified).toBe(true)
+    })
+
+    it('should throw UnrecognizedAlgorithmError if unrecognized algorithm name used', async () => {
+      await cryptoProvider.generateKeyPair('testKey.keyPair')
+
+      await expect(
+        cryptoProvider.generateSignatureWithPrivateKey(
+          'testKey.keyPair',
+          BufferUtil.fromString('data to sign'),
+          {
+            algorithm: 'no-such-algorithm' as SignatureAlgorithm,
+          },
+        ),
+      ).rejects.toEqual(new UnrecognizedAlgorithmError())
+    })
   })
 
   describe('verifySignatureWithPublicKey', () => {
@@ -506,6 +546,21 @@ describe('sudoCryptoProvider', () => {
         signature,
       )
       expect(verified).toBe(false)
+    })
+
+    it('should throw UnrecognizedAlgorithmError if unrecognized algorithm name used', async () => {
+      await cryptoProvider.generateKeyPair('testKey.keyPair')
+
+      await expect(
+        cryptoProvider.verifySignatureWithPublicKey(
+          'random.keyPair',
+          BufferUtil.fromString('data to sign'),
+          BufferUtil.fromString('signature'),
+          {
+            algorithm: 'no-such-algorithm' as SignatureAlgorithm,
+          },
+        ),
+      ).rejects.toEqual(new UnrecognizedAlgorithmError())
     })
   })
 

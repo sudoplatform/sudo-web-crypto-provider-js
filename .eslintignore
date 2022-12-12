@@ -1,0 +1,6 @@
+node_modules/
+build/
+cjs/
+lib/
+.yalc/
+.vscode/
