@@ -167,7 +167,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     const symmetricKey = await crypto.subtle.deriveBits(
       {
         name: WebSudoCryptoProvider.Constants.pbkdfAlgorithm,
-        salt,
+        salt: new Uint8Array(salt),
         iterations: rounds,
         hash: 'SHA-256',
       },
@@ -365,7 +365,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     const encrypted = await crypto.subtle.encrypt(
       {
         name: options.algorithmName,
-        iv: options.iv,
+        iv: new Uint8Array(options.iv),
         tagLength: options.algorithmName == 'AES-GCM' ? 128 : undefined,
       },
       secretKey,
@@ -392,7 +392,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     const decrypted = await crypto.subtle.decrypt(
       {
         name: options.algorithmName,
-        iv: options.iv,
+        iv: new Uint8Array(options.iv),
       },
       secretKey,
       data,

@@ -11,5 +11,6 @@
     "ts-jest": {
       "tsconfig": "tsconfig.commonjs.json"
     }
-  }
+  },
+  "setupFilesAfterEnv": ["./jest.setup.ts"]
 }

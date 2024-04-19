@@ -12,3 +12,4 @@ coverage
 .yalc
 yalc.lock
 .npmrc
+package.json.old

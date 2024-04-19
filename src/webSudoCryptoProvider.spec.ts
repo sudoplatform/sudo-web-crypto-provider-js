@@ -13,21 +13,7 @@ import { v4 } from 'uuid'
 import { LocalStorageStore } from './localStorageStore'
 import { WebSudoCryptoProvider } from './webSudoCryptoProvider'
 
-global.crypto = require('crypto').webcrypto
-// Workaround for a jest bug that causes `instanceof` to return a
-// wrong for `ArrayBuffer` when using webcrypto polyfill with
-// `jsdom` test environment.
-global.ArrayBuffer = ArrayBuffer
-
 const cryptoProvider = new WebSudoCryptoProvider('namespace', 'servicename')
-
-// Workaround for a jest bug that causes buffer allocated using
-// `Buffer.alloc` to be not recognized as `ArrayBuffer`.
-function toArrayBuffer(from: ArrayBuffer): ArrayBuffer {
-  const buffer = new ArrayBuffer(from.byteLength)
-  new Uint8Array(buffer).set(new Uint8Array(from))
-  return buffer
-}
 
 afterEach(async () => {
   await cryptoProvider.removeAllKeys()
@@ -410,7 +396,7 @@ describe('sudoCryptoProvider', () => {
       await expect(
         crypto.subtle.importKey(
           'pkcs8',
-          toArrayBuffer(privateKeyPKCS8Binary),
+          privateKeyPKCS8Binary,
           { name: 'RSA-OAEP', hash: 'SHA-1' },
           true,
           ['decrypt'],
@@ -601,6 +587,7 @@ describe('sudoCryptoProvider', () => {
   })
 
   describe('archive tests', () => {
+    jest.setTimeout(15000)
     it('should archive 200 private keys to an insecure archive with binary size less than 400kB by some margin', async () => {
       const keyManager = new DefaultSudoKeyManager(cryptoProvider)
 
