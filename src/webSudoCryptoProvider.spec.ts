@@ -354,11 +354,44 @@ describe('sudoCryptoProvider', () => {
       ).rejects.toThrow(new KeyNotFoundError())
     })
 
-    it('should encrypt with public key then decrypt with private key', async () => {
+    it('should encrypt with public key specified by name then decrypt with private key', async () => {
       await cryptoProvider.generateKeyPair('testKey.keyPair')
 
       const encryptedBuffer = await cryptoProvider.encryptWithPublicKey(
         'testKey.keyPair',
+        BufferUtil.fromString('data to encrypt'),
+      )
+
+      const decryptedBuffer = await cryptoProvider.decryptWithPrivateKey(
+        'testKey.keyPair',
+        encryptedBuffer,
+      )
+
+      const decrypted = BufferUtil.toString(decryptedBuffer)
+
+      expect(decrypted).toBe('data to encrypt')
+
+      new Uint8Array(encryptedBuffer).fill(0)
+      new Uint8Array(decryptedBuffer).fill(0)
+
+      expect(new Uint8Array(encryptedBuffer)).toEqual(
+        new Uint8Array(encryptedBuffer.byteLength),
+      )
+      expect(new Uint8Array(decryptedBuffer)).toEqual(
+        new Uint8Array(decryptedBuffer.byteLength),
+      )
+    })
+
+    it('should encrypt with public key then decrypt with private key', async () => {
+      await cryptoProvider.generateKeyPair('testKey.keyPair')
+
+      const publicKey = await cryptoProvider.getPublicKey('testKey.keyPair')
+      if (!publicKey?.keyData) {
+        fail('public key data unexpectedly not found')
+      }
+
+      const encryptedBuffer = await cryptoProvider.encryptWithPublicKey(
+        publicKey?.keyData,
         BufferUtil.fromString('data to encrypt'),
       )
 

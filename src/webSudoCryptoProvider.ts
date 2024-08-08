@@ -405,17 +405,44 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     name: string,
     data: ArrayBuffer,
     options?: AsymmetricEncryptionOptions,
-  ): Promise<ArrayBuffer> {
-    name = this.createKeySearchTerm(name, KeyType.PublicKey)
-    const key = await this.#store.getItem(name)
-    if (!key) {
-      return Promise.reject(new KeyNotFoundError())
-    }
-    const keyData = Base64.decode(key as string)
+  ): Promise<ArrayBuffer>
 
+  public async encryptWithPublicKey(
+    key: ArrayBuffer,
+    data: ArrayBuffer,
+    options?: AsymmetricEncryptionOptions,
+  ): Promise<ArrayBuffer>
+
+  public async encryptWithPublicKey(
+    key: unknown,
+    data: ArrayBuffer,
+    options?: AsymmetricEncryptionOptions,
+  ): Promise<ArrayBuffer> {
+    if (typeof key === 'string') {
+      key = this.createKeySearchTerm(key, KeyType.PublicKey)
+      const keyValue = await this.#store.getItem(key as string)
+      if (!keyValue) {
+        return Promise.reject(new KeyNotFoundError())
+      }
+      const keyData = Base64.decode(keyValue as string)
+      return await this.encryptWithPublicKeyData(keyData, data, options)
+    } else {
+      return await this.encryptWithPublicKeyData(
+        key as ArrayBuffer,
+        data,
+        options,
+      )
+    }
+  }
+
+  private async encryptWithPublicKeyData(
+    key: ArrayBuffer,
+    data: ArrayBuffer,
+    options?: AsymmetricEncryptionOptions,
+  ): Promise<ArrayBuffer> {
     const publicKey = await crypto.subtle.importKey(
       KeyFormat.Spki,
-      keyData,
+      key,
       {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
         hash: {
