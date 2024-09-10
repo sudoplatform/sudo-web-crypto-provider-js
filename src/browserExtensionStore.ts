@@ -13,7 +13,10 @@ import { AsyncStore } from './asyncStore'
 export class BrowserExtensionStore<Schema> implements AsyncStore {
   private keyPrefix
 
-  constructor(namesace = '', private storageArea = browser.storage.local) {
+  constructor(
+    namesace = '',
+    private storageArea = browser.storage.local,
+  ) {
     this.keyPrefix = namesace ? namesace + '__' : ''
   }
 

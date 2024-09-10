@@ -643,7 +643,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
   ): { iv: ArrayBuffer; algorithmName: string } => {
     const options = BufferUtil.isArrayBuffer(ivOrOptions)
       ? { iv: ivOrOptions }
-      : ivOrOptions ?? {}
+      : (ivOrOptions ?? {})
     options.iv ??= new ArrayBuffer(WebSudoCryptoProvider.Constants.ivSize)
     options.algorithm ??= EncryptionAlgorithm.AesCbcPkcs7Padding
 

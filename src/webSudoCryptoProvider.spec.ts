@@ -28,9 +28,8 @@ describe('sudoCryptoProvider', () => {
         BufferUtil.fromString('am@z1ing'),
         'testKey.password',
       )
-      const passwordBuffer = await cryptoProvider.getPassword(
-        'testKey.password',
-      )
+      const passwordBuffer =
+        await cryptoProvider.getPassword('testKey.password')
 
       expect(passwordBuffer).toBeDefined()
       const password = BufferUtil.toString(passwordBuffer!)
@@ -54,9 +53,8 @@ describe('sudoCryptoProvider', () => {
         'testKey.password',
       )
 
-      const passwordBuffer = await cryptoProvider.getPassword(
-        'testKey.password',
-      )
+      const passwordBuffer =
+        await cryptoProvider.getPassword('testKey.password')
 
       expect(passwordBuffer).toBeDefined()
       expect(BufferUtil.toString(passwordBuffer!)).toBe('w0W!')
@@ -86,44 +84,36 @@ describe('sudoCryptoProvider', () => {
       )
       await cryptoProvider.generateKeyPair('testKey.keyPair')
 
-      const symmetricKeyAnswer = await cryptoProvider.getSymmetricKey(
-        'testKey.symmetric',
-      )
+      const symmetricKeyAnswer =
+        await cryptoProvider.getSymmetricKey('testKey.symmetric')
       expect(symmetricKeyAnswer).toBeDefined()
       expect(BufferUtil.toString(symmetricKeyAnswer!)).toBe(symmetricKey)
 
-      const passwordAnswer = await cryptoProvider.getPassword(
-        'testKey.password',
-      )
+      const passwordAnswer =
+        await cryptoProvider.getPassword('testKey.password')
       expect(passwordAnswer).toBeDefined()
       expect(BufferUtil.toString(passwordAnswer!)).toBe('am@z1ing')
 
-      const publicKeyAnswer = await cryptoProvider.getPublicKey(
-        'testKey.keyPair',
-      )
+      const publicKeyAnswer =
+        await cryptoProvider.getPublicKey('testKey.keyPair')
       expect(publicKeyAnswer).toBeDefined()
-      const privateKeyAnswer = await cryptoProvider.getPrivateKey(
-        'testKey.keyPair',
-      )
+      const privateKeyAnswer =
+        await cryptoProvider.getPrivateKey('testKey.keyPair')
       expect(privateKeyAnswer).toBeDefined()
 
       await cryptoProvider.removeAllKeys()
 
-      const symmetricRemoval = await cryptoProvider.getSymmetricKey(
-        'testKey.symmetric',
-      )
+      const symmetricRemoval =
+        await cryptoProvider.getSymmetricKey('testKey.symmetric')
       expect(symmetricRemoval).toBeUndefined()
-      const passwordRemoval = await cryptoProvider.getPassword(
-        'testKey.password',
-      )
+      const passwordRemoval =
+        await cryptoProvider.getPassword('testKey.password')
       expect(passwordRemoval).toBeUndefined()
-      const publicKeyRemoval = await cryptoProvider.getPublicKey(
-        'testKey.keyPair',
-      )
+      const publicKeyRemoval =
+        await cryptoProvider.getPublicKey('testKey.keyPair')
       expect(publicKeyRemoval).toBeUndefined()
-      const privateKeyRemoval = await cryptoProvider.getPrivateKey(
-        'testKey.keyPair',
-      )
+      const privateKeyRemoval =
+        await cryptoProvider.getPrivateKey('testKey.keyPair')
       expect(privateKeyRemoval).toBeUndefined()
     })
   })
@@ -145,9 +135,8 @@ describe('sudoCryptoProvider', () => {
 
       await cryptoProvider.deleteSymmetricKey('testKey.symmetric')
 
-      const deletedKey = await cryptoProvider.getSymmetricKey(
-        'testKey.symmetric',
-      )
+      const deletedKey =
+        await cryptoProvider.getSymmetricKey('testKey.symmetric')
       expect(deletedKey).toBeUndefined()
     })
   })
@@ -188,25 +177,22 @@ describe('sudoCryptoProvider', () => {
         'testKey.symmetric',
       )
 
-      const result = await cryptoProvider.doesSymmetricKeyExist(
-        'testKey.symmetric',
-      )
+      const result =
+        await cryptoProvider.doesSymmetricKeyExist('testKey.symmetric')
       expect(result).toBeTruthy()
     })
 
     it('should return false if the key does not exists', async () => {
-      const result = await cryptoProvider.doesSymmetricKeyExist(
-        'random.symmetric',
-      )
+      const result =
+        await cryptoProvider.doesSymmetricKeyExist('random.symmetric')
       expect(result).toBeFalsy()
     })
   })
 
   describe('generateSymmetricKey', () => {
     it('should generate and store new symmetric key', async () => {
-      const existingKey = await cryptoProvider.getSymmetricKey(
-        'testKey.symmetric',
-      )
+      const existingKey =
+        await cryptoProvider.getSymmetricKey('testKey.symmetric')
       expect(existingKey).toBeUndefined()
 
       await cryptoProvider.generateSymmetricKey('testKey.symmetric')
@@ -311,21 +297,18 @@ describe('sudoCryptoProvider', () => {
 
   describe('generateKeyPair', () => {
     it('should generate and store new key pair', async () => {
-      const existingPublicKey = await cryptoProvider.getPublicKey(
-        'testKey.keyPair',
-      )
+      const existingPublicKey =
+        await cryptoProvider.getPublicKey('testKey.keyPair')
       expect(existingPublicKey).toBeUndefined()
 
       await cryptoProvider.generateKeyPair('testKey.keyPair')
 
-      const generatedPublicKey = await cryptoProvider.getPublicKey(
-        'testKey.keyPair',
-      )
+      const generatedPublicKey =
+        await cryptoProvider.getPublicKey('testKey.keyPair')
       expect(generatedPublicKey).toBeDefined()
 
-      const generatedPrivateKey = await cryptoProvider.getPrivateKey(
-        'testKey.keyPair',
-      )
+      const generatedPrivateKey =
+        await cryptoProvider.getPrivateKey('testKey.keyPair')
       expect(generatedPrivateKey).toBeDefined()
     })
   })
@@ -418,9 +401,8 @@ describe('sudoCryptoProvider', () => {
     it('should export RSA private key as PKCS#8 object', async () => {
       await cryptoProvider.generateKeyPair('testKey.keyPair')
 
-      const privateKeyPKCS8Binary = await cryptoProvider.getPrivateKey(
-        'testKey.keyPair',
-      )
+      const privateKeyPKCS8Binary =
+        await cryptoProvider.getPrivateKey('testKey.keyPair')
       expect(privateKeyPKCS8Binary).toBeDefined()
       if (!privateKeyPKCS8Binary) {
         fail('privateKeyPKCS8Binary unexpectedly undefined')
@@ -440,9 +422,8 @@ describe('sudoCryptoProvider', () => {
     it('should export RSA public key in SPKI format', async () => {
       await cryptoProvider.generateKeyPair('testKey.keyPair')
 
-      const publicKeySPKIBinary = await cryptoProvider.getPublicKey(
-        'testKey.keyPair',
-      )
+      const publicKeySPKIBinary =
+        await cryptoProvider.getPublicKey('testKey.keyPair')
       expect(publicKeySPKIBinary).toBeDefined()
       if (!publicKeySPKIBinary) {
         fail('publicKeySPKIBinary unexpectedly undefined')
@@ -791,7 +772,7 @@ describe('sudoCryptoProvider', () => {
 
       const archive = await archiver.archive(BufferUtil.fromString('password'))
 
-      cryptoProvider.removeAllKeys()
+      await cryptoProvider.removeAllKeys()
 
       const unarchiver = new DefaultSudoKeyArchive(keyManager, {
         archiveData: archive,

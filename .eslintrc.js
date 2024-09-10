@@ -17,6 +17,7 @@ module.exports = {
       },
       extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
       rules: {
+        "@typescript-eslint/no-floating-promises": "error",
         // Disallow `any`.  (This is overridden for test files, below)
         '@typescript-eslint/no-explicit-any': 'error',
 
@@ -63,6 +64,7 @@ module.exports = {
         project: './tsconfig.commonjs.json',
       },
       rules: {
+        "@typescript-eslint/no-floating-promises": "error",
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
       },
