@@ -20,3 +20,10 @@ export class NotImplementedError extends Error {
     this.name = 'NotImplementedError'
   }
 }
+
+export class InvalidKeyFormatError extends Error {
+  constructor(message?: string) {
+    super(message ?? 'Key format not supported.')
+    this.name = 'InvalidKeyFormatError'
+  }
+}

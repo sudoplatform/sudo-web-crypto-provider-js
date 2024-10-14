@@ -330,7 +330,7 @@ describe('sudoCryptoProvider', () => {
   describe('encryptWithPublicKey', () => {
     it('should throw KeyNotFoundError when public key not set', async () => {
       await expect(
-        cryptoProvider.encryptWithPublicKey(
+        cryptoProvider.encryptWithPublicKeyName(
           'random.keyPair',
           BufferUtil.fromString('data to encrypt'),
         ),
@@ -340,7 +340,7 @@ describe('sudoCryptoProvider', () => {
     it('should encrypt with public key specified by name then decrypt with private key', async () => {
       await cryptoProvider.generateKeyPair('testKey.keyPair')
 
-      const encryptedBuffer = await cryptoProvider.encryptWithPublicKey(
+      const encryptedBuffer = await cryptoProvider.encryptWithPublicKeyName(
         'testKey.keyPair',
         BufferUtil.fromString('data to encrypt'),
       )
@@ -574,7 +574,7 @@ describe('sudoCryptoProvider', () => {
       )
       await cryptoProvider.generateKeyPair('testKey.keyPair')
 
-      const encryptedBuffer = await cryptoProvider.encryptWithPublicKey(
+      const encryptedBuffer = await cryptoProvider.encryptWithPublicKeyName(
         'testKey.keyPair',
         BufferUtil.fromString('data to encrypt'),
       )

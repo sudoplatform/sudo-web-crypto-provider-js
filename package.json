@@ -38,14 +38,14 @@
     "types"
   ],
   "peerDependencies": {
-    "@sudoplatform/sudo-common": "^8.2.0"
+    "@sudoplatform/sudo-common": "^9.0.0"
   },
   "resolutions": {
     "braces": "^3.0.3",
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "@sudoplatform/sudo-common": "^8.10.1",
+    "@sudoplatform/sudo-common": "^9.0.0",
     "@types/firefox-webext-browser": "^120.0.3",
     "@types/jest": "^29.5.12",
     "@types/uuid": "^10.0.0",

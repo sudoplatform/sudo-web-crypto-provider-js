@@ -22,7 +22,7 @@ import {
   UnrecognizedAlgorithmError,
 } from '@sudoplatform/sudo-common'
 import { AsyncStore } from './asyncStore'
-import { KeyNotFoundError } from './errors'
+import { InvalidKeyFormatError, KeyNotFoundError } from './errors'
 import { MemoryStore } from './memoryStore'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -401,38 +401,32 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     return decrypted
   }
 
-  public async encryptWithPublicKey(
+  public async encryptWithPublicKeyName(
     name: string,
     data: ArrayBuffer,
     options?: AsymmetricEncryptionOptions,
-  ): Promise<ArrayBuffer>
+  ): Promise<ArrayBuffer> {
+    const key = this.createKeySearchTerm(name, KeyType.PublicKey)
+    const keyValue = await this.#store.getItem(key as string)
+    if (!keyValue) {
+      return Promise.reject(new KeyNotFoundError())
+    }
+    const keyData = Base64.decode(keyValue as string)
+    return await this.encryptWithPublicKeyData(keyData, data, {
+      publicKeyFormat: PublicKeyFormat.SPKI,
+      ...options,
+    })
+  }
 
   public async encryptWithPublicKey(
     key: ArrayBuffer,
     data: ArrayBuffer,
     options?: AsymmetricEncryptionOptions,
-  ): Promise<ArrayBuffer>
-
-  public async encryptWithPublicKey(
-    key: unknown,
-    data: ArrayBuffer,
-    options?: AsymmetricEncryptionOptions,
   ): Promise<ArrayBuffer> {
-    if (typeof key === 'string') {
-      key = this.createKeySearchTerm(key, KeyType.PublicKey)
-      const keyValue = await this.#store.getItem(key as string)
-      if (!keyValue) {
-        return Promise.reject(new KeyNotFoundError())
-      }
-      const keyData = Base64.decode(keyValue as string)
-      return await this.encryptWithPublicKeyData(keyData, data, options)
-    } else {
-      return await this.encryptWithPublicKeyData(
-        key as ArrayBuffer,
-        data,
-        options,
-      )
-    }
+    return await this.encryptWithPublicKeyData(key as ArrayBuffer, data, {
+      publicKeyFormat: PublicKeyFormat.SPKI,
+      ...options,
+    })
   }
 
   private async encryptWithPublicKeyData(
@@ -440,6 +434,12 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     data: ArrayBuffer,
     options?: AsymmetricEncryptionOptions,
   ): Promise<ArrayBuffer> {
+    if (
+      (options?.publicKeyFormat ?? PublicKeyFormat.SPKI) !==
+      PublicKeyFormat.SPKI
+    ) {
+      throw new InvalidKeyFormatError('PublicKeyFormat must be SPKI')
+    }
     const publicKey = await crypto.subtle.importKey(
       KeyFormat.Spki,
       key,

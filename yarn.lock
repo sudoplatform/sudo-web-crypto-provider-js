@@ -1747,10 +1747,10 @@
     "@smithy/types" "^3.4.0"
     tslib "^2.6.2"
 
-"@sudoplatform/sudo-common@^8.10.1":
-  version "8.10.1"
-  resolved "https://registry.yarnpkg.com/@sudoplatform/sudo-common/-/sudo-common-8.10.1.tgz#7814e235347aef82cde630968452b970444318ac"
-  integrity sha512-GnG0E8X4wi3z4FnqHkB3B2J2CCV5ib9y2zsHyFlr6JdNG+okzkYShA+Vm8uqkuAzeQYVVsukkxjghA4saF0H4g==
+"@sudoplatform/sudo-common@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@sudoplatform/sudo-common/-/sudo-common-9.0.0.tgz#deea6747a598917dba6950bb66c8548ee98ad4f2"
+  integrity sha512-bc83dDzfuJoA/Mec8DB5b171pJOOs21BkW41qVgxRjO5AYRerompta1v+xPJ+Kxv9zeehkEvMbcvPB1E9y8cHA==
   dependencies:
     "@aws-sdk/client-s3" "^3.588.0"
     apollo-client "^2.6.10"
