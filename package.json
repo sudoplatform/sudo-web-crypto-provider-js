@@ -38,10 +38,10 @@
     "types"
   ],
   "peerDependencies": {
-    "@sudoplatform/sudo-common": "10.0.0"
+    "@sudoplatform/sudo-common": "^10.0.0"
   },
   "devDependencies": {
-    "@sudoplatform/sudo-common": "10.0.0",
+    "@sudoplatform/sudo-common": "^10.0.0",
     "@types/firefox-webext-browser": "^120.0.4",
     "@types/jest": "^29.5.14",
     "@types/uuid": "^10.0.0",
