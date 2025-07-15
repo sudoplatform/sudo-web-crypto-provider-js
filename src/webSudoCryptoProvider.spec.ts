@@ -5,6 +5,7 @@ import {
   EncryptionAlgorithm,
   KeyArchiveIncorrectPasswordError,
   KeyArchiveKeyType,
+  KeyDataKeyType,
   KeyNotFoundError,
   SignatureAlgorithm,
   UnrecognizedAlgorithmError,
@@ -561,6 +562,66 @@ describe('sudoCryptoProvider', () => {
           },
         ),
       ).rejects.toEqual(new UnrecognizedAlgorithmError())
+    })
+  })
+
+  describe('exportKeys', () => {
+    it('generates expected result', async () => {
+      const keyPairName = 'testKey.keyPair'
+      const passwordName = 'testKey.password'
+      const symmetricKeyName = 'testKey.symmetric'
+      await cryptoProvider.generateKeyPair(keyPairName)
+      await cryptoProvider.addPassword(
+        BufferUtil.fromString('am@z1ing'),
+        passwordName,
+      )
+      await cryptoProvider.generateSymmetricKey(symmetricKeyName)
+
+      const exported = await cryptoProvider.exportKeys()
+      expect(exported).toHaveLength(4)
+      const publicKey = exported.find(
+        (key) => key.type === KeyDataKeyType.RSAPublicKey,
+      )
+      expect(publicKey).toBeDefined()
+      expect(publicKey?.name).toEqual(keyPairName)
+      const privateKey = exported.find(
+        (key) => key.type === KeyDataKeyType.RSAPrivateKey,
+      )
+      expect(privateKey).toBeDefined()
+      expect(privateKey?.name).toEqual(keyPairName)
+      const password = exported.find(
+        (key) => key.type === KeyDataKeyType.Password,
+      )
+      expect(password).toBeDefined()
+      expect(password?.name).toEqual(passwordName)
+      const symmetricKey = exported.find(
+        (key) => key.type === KeyDataKeyType.SymmetricKey,
+      )
+      expect(symmetricKey).toBeDefined()
+      expect(symmetricKey?.name).toEqual(symmetricKeyName)
+    })
+
+    it('should not create duplicates if key name contains another key type', async () => {
+      const passwordName = 'testKey.symmetric.password'
+      const symmetricKeyName = 'testKey.symmetric'
+      await cryptoProvider.addPassword(
+        BufferUtil.fromString('am@z1ing'),
+        passwordName,
+      )
+      await cryptoProvider.generateSymmetricKey(symmetricKeyName)
+
+      const exported = await cryptoProvider.exportKeys()
+      expect(exported).toHaveLength(2)
+      const password = exported.find(
+        (key) => key.type === KeyDataKeyType.Password,
+      )
+      expect(password).toBeDefined()
+      expect(password?.name).toEqual(passwordName)
+      const symmetricKey = exported.find(
+        (key) => key.type === KeyDataKeyType.SymmetricKey,
+      )
+      expect(symmetricKey).toBeDefined()
+      expect(symmetricKey?.name).toEqual(symmetricKeyName)
     })
   })
 

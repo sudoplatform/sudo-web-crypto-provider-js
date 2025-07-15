@@ -552,7 +552,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     for (const k of storeKeys) {
       const v = await this.#store.getItem(k)
 
-      if (k.includes(KeyType.PrivateKey)) {
+      if (k.endsWith(`.${KeyType.PrivateKey}`)) {
         keys.push({
           name: this.recoverKeyName(k, KeyType.PrivateKey),
           namespace: this.#namespace,
@@ -562,7 +562,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
         })
       }
 
-      if (k.includes(KeyType.PublicKey)) {
+      if (k.endsWith(`.${KeyType.PublicKey}`)) {
         keys.push({
           name: this.recoverKeyName(k, KeyType.PublicKey),
           namespace: this.#namespace,
@@ -572,7 +572,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
         })
       }
 
-      if (k.includes(KeyType.Password)) {
+      if (k.endsWith(`.${KeyType.Password}`)) {
         keys.push({
           name: this.recoverKeyName(k, KeyType.Password),
           namespace: this.#namespace,
@@ -582,7 +582,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
         })
       }
 
-      if (k.includes(KeyType.Symmetric)) {
+      if (k.endsWith(`.${KeyType.Symmetric}`)) {
         keys.push({
           name: this.recoverKeyName(k, KeyType.Symmetric),
           namespace: this.#namespace,
