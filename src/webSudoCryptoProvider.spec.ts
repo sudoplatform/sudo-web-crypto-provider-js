@@ -838,4 +838,12 @@ describe('sudoCryptoProvider', () => {
       ).rejects.toThrow(new KeyArchiveIncorrectPasswordError())
     })
   })
+
+  it('generateHash returns expected result', async () => {
+    const expectedResultString = '2LsE3dvs0+sOqjZIH4eKSmDK6rw='
+    const result = await cryptoProvider.generateHash(
+      BufferUtil.fromString('plaintext'),
+    )
+    expect(Base64.encode(result)).toBe(expectedResultString)
+  })
 })

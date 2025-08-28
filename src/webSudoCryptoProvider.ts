@@ -502,7 +502,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
         name: algorithmName,
       },
       privateKey,
-      data,
+      new Uint8Array(data),
     )
 
     return decrypted
@@ -511,7 +511,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
   public generateHash(data: ArrayBuffer): Promise<ArrayBuffer> {
     return crypto.subtle.digest(
       WebSudoCryptoProvider.Constants.publicKeyEncryptionHashingAlgorithm,
-      data,
+      new Uint8Array(data),
     )
   }
 
