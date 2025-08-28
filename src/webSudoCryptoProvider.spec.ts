@@ -1,4 +1,5 @@
 import {
+  Base64,
   Buffer as BufferUtil,
   DefaultSudoKeyArchive,
   DefaultSudoKeyManager,
@@ -154,13 +155,7 @@ describe('sudoCryptoProvider', () => {
       const buffer = await cryptoProvider.getSymmetricKey('testKey.symmetric')
 
       expect(buffer).toBeDefined()
-
-      expect(
-        Buffer.compare(
-          new Uint8Array(buffer ?? new ArrayBuffer(0)),
-          symmetricKeyBuffer,
-        ),
-      ).toEqual(0)
+      expect(Base64.encode(buffer!)).toEqual(Base64.encode(symmetricKeyBuffer))
     })
 
     it('should be undefined when symmetric key not set', async () => {
@@ -412,7 +407,7 @@ describe('sudoCryptoProvider', () => {
       await expect(
         crypto.subtle.importKey(
           'pkcs8',
-          privateKeyPKCS8Binary,
+          new Uint8Array(privateKeyPKCS8Binary),
           { name: 'RSA-OAEP', hash: 'SHA-1' },
           true,
           ['decrypt'],
@@ -699,11 +694,11 @@ describe('sudoCryptoProvider', () => {
       for (const name of names) {
         publicKeySealed[name] = await keyManager.encryptWithPublicKey(
           name,
-          Buffer.from(name),
+          BufferUtil.fromString(name),
         )
         symmetricKeySealed[name] = await keyManager.encryptWithSymmetricKeyName(
           name,
-          Buffer.from(name),
+          BufferUtil.fromString(name),
         )
       }
 
@@ -760,11 +755,11 @@ describe('sudoCryptoProvider', () => {
       for (const name of names) {
         publicKeySealed[name] = await keyManager.encryptWithPublicKey(
           name,
-          Buffer.from(name),
+          BufferUtil.fromString(name),
         )
         symmetricKeySealed[name] = await keyManager.encryptWithSymmetricKeyName(
           name,
-          Buffer.from(name),
+          BufferUtil.fromString(name),
         )
       }
 
@@ -818,11 +813,11 @@ describe('sudoCryptoProvider', () => {
       for (const name of names) {
         publicKeySealed[name] = await keyManager.encryptWithPublicKey(
           name,
-          Buffer.from(name),
+          BufferUtil.fromString(name),
         )
         symmetricKeySealed[name] = await keyManager.encryptWithSymmetricKeyName(
           name,
-          Buffer.from(name),
+          BufferUtil.fromString(name),
         )
       }
 

@@ -173,7 +173,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
       },
       await crypto.subtle.importKey(
         'raw',
-        password,
+        new Uint8Array(password),
         WebSudoCryptoProvider.Constants.pbkdfAlgorithm,
         false,
         ['deriveBits', 'deriveKey'],
@@ -212,7 +212,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     }
     const privateKey = await crypto.subtle.importKey(
       KeyFormat.Pkcs8,
-      key,
+      new Uint8Array(key),
       {
         name: signatureGenerationAlgorithm,
         hash: {
@@ -225,7 +225,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     return await crypto.subtle.sign(
       signatureGenerationAlgorithm,
       privateKey,
-      data,
+      new Uint8Array(data),
     )
   }
 
@@ -249,7 +249,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
 
     const publicKey = await crypto.subtle.importKey(
       KeyFormat.Spki,
-      keyData,
+      new Uint8Array(keyData),
       {
         name: signatureGenerationAlgorithm,
         hash: {
@@ -263,8 +263,8 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     return await crypto.subtle.verify(
       signatureGenerationAlgorithm,
       publicKey,
-      signature,
-      data,
+      new Uint8Array(signature),
+      new Uint8Array(data),
     )
   }
 
@@ -356,7 +356,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
 
     const secretKey = await crypto.subtle.importKey(
       'raw',
-      key,
+      new Uint8Array(key),
       options.algorithmName,
       false,
       ['encrypt'],
@@ -369,7 +369,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
         tagLength: options.algorithmName == 'AES-GCM' ? 128 : undefined,
       },
       secretKey,
-      data,
+      new Uint8Array(data),
     )
 
     return encrypted
@@ -384,7 +384,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
 
     const secretKey = await crypto.subtle.importKey(
       'raw',
-      key,
+      new Uint8Array(key),
       options.algorithmName,
       false,
       ['decrypt'],
@@ -395,7 +395,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
         iv: new Uint8Array(options.iv),
       },
       secretKey,
-      data,
+      new Uint8Array(data),
     )
 
     return decrypted
@@ -442,7 +442,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
     }
     const publicKey = await crypto.subtle.importKey(
       KeyFormat.Spki,
-      key,
+      new Uint8Array(key),
       {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
         hash: {
@@ -463,7 +463,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
         name: algorithmName,
       },
       publicKey,
-      data,
+      new Uint8Array(data),
     )
 
     return encrypted
@@ -481,7 +481,7 @@ export class WebSudoCryptoProvider implements SudoCryptoProvider {
 
     const privateKey = await crypto.subtle.importKey(
       KeyFormat.Pkcs8,
-      key,
+      new Uint8Array(key),
       {
         name: WebSudoCryptoProvider.Constants.publicKeyEncryptionAlgorithm,
         hash: {
