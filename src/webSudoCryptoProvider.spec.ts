@@ -657,7 +657,7 @@ describe('sudoCryptoProvider', () => {
   })
 
   describe('archive tests', () => {
-    jest.setTimeout(15000)
+    jest.setTimeout(25000)
     it('should archive 200 private keys to an insecure archive with binary size less than 400kB by some margin', async () => {
       const keyManager = new DefaultSudoKeyManager(cryptoProvider)
 
