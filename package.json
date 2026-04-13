@@ -84,6 +84,31 @@
       "until": 1766039321,
       "untilISO": "2025-12-18T06:28:41Z",
       "reason": "Waiting for js-yaml fix"
+    },
+    "1113153": {
+      "until": 1778625780,
+      "untilISO": "2026-05-12T22:43:00Z",
+      "reason": "fast-xml-parser 5.2.5 pinned by @aws-sdk/xml-builder — transitive dep"
+    },
+    "1113568": {
+      "until": 1778625780,
+      "untilISO": "2026-05-12T22:43:00Z",
+      "reason": "fast-xml-parser 5.2.5 pinned by @aws-sdk/xml-builder — transitive dep"
+    },
+    "1113569": {
+      "until": 1778625780,
+      "untilISO": "2026-05-12T22:43:00Z",
+      "reason": "fast-xml-parser 5.2.5 pinned by @aws-sdk/xml-builder — transitive dep"
+    },
+    "1115339": {
+      "until": 1778625780,
+      "untilISO": "2026-05-12T22:43:00Z",
+      "reason": "fast-xml-parser 5.2.5 pinned by @aws-sdk/xml-builder — transitive dep"
+    },
+    "1116307": {
+      "until": 1778625780,
+      "untilISO": "2026-05-12T22:43:00Z",
+      "reason": "fast-xml-parser 5.2.5 pinned by @aws-sdk/xml-builder — transitive dep"
     }
   }
 }
