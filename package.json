@@ -105,6 +105,26 @@
       "untilISO": "2026-05-12T22:43:00Z",
       "reason": "fast-xml-parser 5.2.5 pinned by @aws-sdk/xml-builder — transitive dep"
     },
+    "1115538": {
+      "until": 1780015843,
+      "untilISO": "2026-05-29T00:50:43Z",
+      "reason": "handlebars transitive via ts-jest, no fix available"
+    },
+    "1115539": {
+      "until": 1780015843,
+      "untilISO": "2026-05-29T00:50:43Z",
+      "reason": "handlebars transitive via ts-jest, no fix available"
+    },
+    "1115544": {
+      "until": 1780015843,
+      "untilISO": "2026-05-29T00:50:43Z",
+      "reason": "handlebars transitive via ts-jest, no fix available"
+    },
+    "1115588": {
+      "until": 1780015843,
+      "untilISO": "2026-05-29T00:50:43Z",
+      "reason": "handlebars transitive via ts-jest, no fix available"
+    },
     "1116307": {
       "until": 1778625780,
       "untilISO": "2026-05-12T22:43:00Z",
